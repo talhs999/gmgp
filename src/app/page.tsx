@@ -82,18 +82,19 @@ export default function HomePage() {
           <p className="text-center text-gray-500 text-sm mb-10">See what our customers are cooking</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "https://www.youtube.com/embed/nJuLheO6I-o",
-              "https://www.youtube.com/embed/AmC9SmCBUj4",
-              "https://www.youtube.com/embed/1Fi6wE0T63o",
-              "https://www.youtube.com/embed/V3gtyzGEyR8",
+              "https://videos.pexels.com/video-files/4106208/4106208-hd_1080_1920_24fps.mp4",
+              "https://videos.pexels.com/video-files/5903264/5903264-hd_1080_1920_30fps.mp4",
+              "https://videos.pexels.com/video-files/4252445/4252445-hd_1080_1920_30fps.mp4",
+              "https://videos.pexels.com/video-files/4106203/4106203-hd_1080_1920_24fps.mp4",
             ].map((src, i) => (
               <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md">
-                <iframe
-                  src={`${src}?autoplay=0&controls=1&modestbranding=1`}
-                  className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={`grill video ${i + 1}`}
+                <video
+                  src={src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
             ))}

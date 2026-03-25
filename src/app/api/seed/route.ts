@@ -40,7 +40,7 @@ export async function GET() {
           name: prod.name,
           slug: prod.slug,
           description: prod.description,
-          category_id: catIdMap[prod.category_id], // use the mapped UUID!
+          category_id: prod.category_id ? catIdMap[prod.category_id] : null, // use the mapped UUID!
           price: prod.price,
           compare_at_price: prod.compare_at_price || null,
           image_url: prod.image_url,

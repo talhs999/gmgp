@@ -38,7 +38,7 @@ export default function ShopPage() {
   }, [search, activeCategory, sortBy, products]);
 
   return (
-    <div className="pt-16">
+    <div>
       {/* Hero Banner */}
       <div
         className="relative h-48 md:h-64 flex items-center justify-center"
