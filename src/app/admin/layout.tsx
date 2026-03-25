@@ -21,9 +21,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, isAdmin, loading } = useAuth();
 
   useEffect(() => {
-    if (!loading && !user) router.push("/login");
-    // Note: isAdmin check is soft — the Supabase RLS policies enforce actual security
-  }, [user, loading, router]);
+    if (!loading) {
+      if (!user) router.push("/login");
+      else if (!isAdmin) router.push("/");
+    }
+  }, [user, isAdmin, loading, router]);
 
   if (loading) {
     return (
