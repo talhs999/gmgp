@@ -1,0 +1,23 @@
+﻿branch 'main' set up to track 'origin/main'.
+git : Everything 
+up-to-date
+At line:1 char:120
++ ... 
+/talhs999/gmgp.git 
+2>&1; git push -u 
+origin main --force 
+2>&1 | Out-F ...
++                   
+           ~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Ever   
+ ything up-to-da    
+te:String) [],     
+RemoteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 

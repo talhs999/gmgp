@@ -1,0 +1,32 @@
+﻿git : remote: 
+Invalid username or 
+token. Password 
+authentication is 
+not supported for 
+Git operations.
+At line:1 char:91
++ ... 
+/talhs999/gmgp.git 
+2>&1; git push -u 
+origin main --force 
+2>&1 | Out-F ...
++                   
+           ~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (remo   
+ te: Invalid...G    
+it operations.:    
+String) [], Rem    
+oteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+fatal: 
+Authentication 
+failed for 'https://
+github.com/talhs999/
+gmgp.git/'
