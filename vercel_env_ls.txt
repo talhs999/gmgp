@@ -1,0 +1,41 @@
+﻿node.exe : 
+Retrieving 
+projectΓÇª
+At C:\Users\talha\Ap
+pData\Roaming\npm\ve
+rcel.ps1:24 char:5
++     & "node$exe"  
+"$basedir/node_modul
+es/vercel/dist/vc.js
+" $args
++     ~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Retr   
+ ieving projectΓ    
+Çª:String) [],     
+RemoteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+> Environment 
+Variables found for 
+talha-s-projects-4a0
+c8b7c/gmgp-clone 
+[327ms]
+
+ name                               value               environments        created    
+ NEXT_PUBLIC_SITE_URL               Encrypted           Production          19m ago    
+ SUPABASE_SERVICE_ROLE_KEY          Encrypted           Production          19m ago    
+ NEXT_PUBLIC_SUPABASE_ANON_KEY      Encrypted           Production          19m ago    
+ NEXT_PUBLIC_SUPABASE_URL           Encrypted           Production          19m ago    
+
+Common next 
+commands:
+- `vercel env add`
+- `vercel env rm`
+- `vercel env pull`

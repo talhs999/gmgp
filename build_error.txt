@@ -1,0 +1,44 @@
+﻿
+> gmgp-clone@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.3.1
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 17.0s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/16) ...
+   Generating static pages (4/16) 
+   Generating static pages (8/16) 
+   Generating static pages (12/16) 
+ Γ£ô Generating static pages (16/16)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+Γöî Γùï /                                    4.97 kB         169 kB
+Γö£ Γùï /_not-found                            977 B         102 kB
+Γö£ Γùï /account                             4.52 kB         160 kB
+Γö£ Γùï /admin                               3.66 kB         156 kB
+Γö£ Γùï /admin/categories                    3.25 kB         155 kB
+Γö£ Γùï /admin/orders                        3.17 kB         155 kB
+Γö£ Γùï /admin/products                      3.28 kB         164 kB
+Γö£ ╞Æ /admin/products/[id]                 7.97 kB         112 kB
+Γö£ Γùï /admin/products/new                  4.21 kB         160 kB
+Γö£ Γùï /admin/users                         3.06 kB         155 kB
+Γö£ Γùï /checkout                            4.15 kB         168 kB
+Γö£ Γùï /login                               1.22 kB         157 kB
+Γö£ Γùï /membership                          1.29 kB         106 kB
+Γö£ ╞Æ /products/[slug]                      4.8 kB         168 kB
+Γö£ Γùï /register                            1.48 kB         157 kB
+Γöö Γùï /shop                                4.52 kB         168 kB
++ First Load JS shared by all             101 kB
+  Γö£ chunks/4bd1b696-a119917e8260f56f.js  53.2 kB
+  Γö£ chunks/684-4c22f52b9cc2c694.js       45.9 kB
+  Γöö other shared chunks (total)          1.99 kB
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

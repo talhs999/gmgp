@@ -1,0 +1,41 @@
+﻿node.exe : 
+Retrieving 
+projectΓÇª
+At C:\Users\talha\Ap
+pData\Roaming\npm\ve
+rcel.ps1:24 char:5
++     & "node$exe"  
+"$basedir/node_modul
+es/vercel/dist/vc.js
+" $args
++     ~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Retr   
+ ieving projectΓ    
+Çª:String) [],     
+RemoteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+Resolving 
+deployment "gmgp-clo
+ne-jv305pdts-talha-s
+-projects-4a0c8b7c.v
+ercel.app"
+Streaming logs for 
+deployment dpl_DRvHP
+m7QEHNNzLuUMG5RDVbzb
+hpg starting from 
+03:24:35.90
+
+waiting for new 
+logs...
+WARNING! Exceeded 
+query duration 
+limit of 5 minutes
+

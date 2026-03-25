@@ -1,0 +1,98 @@
+﻿node.exe : 
+Retrieving 
+projectΓÇª
+At C:\Users\talha\Ap
+pData\Roaming\npm\ve
+rcel.ps1:24 char:5
++     & "node$exe"  
+"$basedir/node_modul
+es/vercel/dist/vc.js
+" $args
++     ~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Retr   
+ ieving projectΓ    
+Çª:String) [],     
+RemoteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+Fetching 
+deployments in talha
+-s-projects-4a0c8b7c
+> Deployments for ta
+lha-s-projects-4a0c8
+b7c/gmgp-clone 
+[338ms]
+
+  Age     Project   
+                    
+           
+Deployment          
+                    
+                    
+          Status    
+     Environment    
+ Duration     
+Username          
+  28s     talha-s-pr
+ojects-4a0c8b7c/gmgp
+-clone     https://g
+mgp-clone-is1da8xpw-
+talha-s-projects-4a0
+c8b7c.vercel.app    
+ ΓùÅ Building     
+Production      --  
+         
+piaic007-4532     
+  11m     talha-s-pr
+ojects-4a0c8b7c/gmgp
+-clone     https://g
+mgp-clone-jv305pdts-
+talha-s-projects-4a0
+c8b7c.vercel.app    
+ ΓùÅ Error        
+Production      44s 
+         
+piaic007-4532     
+  13m     talha-s-pr
+ojects-4a0c8b7c/gmgp
+-clone     https://g
+mgp-clone-3n9xho1f5-
+talha-s-projects-4a0
+c8b7c.vercel.app    
+ ΓùÅ Error        
+Production      45s 
+         
+piaic007-4532     
+https://gmgp-clone-is1da8xpw-talha-s-projects-4a0c8b7c.vercel.app
+https://gmgp-clone-jv305pdts-talha-s-projects-4a0c8b7c.vercel.app
+https://gmgp-clone-3n9xho1f5-talha-s-projects-4a0c8b7c.vercel.app
+https://gmgp-clone-fl47ng305-talha-s-projects-4a0c8b7c.vercel.app
+  31m     talha-s-pr
+ojects-4a0c8b7c/gmgp
+-clone     https://g
+mgp-clone-fl47ng305-
+talha-s-projects-4a0
+c8b7c.vercel.app    
+ ΓùÅ Error        
+Production      37s 
+         
+piaic007-4532     
+  32m     talha-s-pr
+ojects-4a0c8b7c/gmgp
+-clone     https://g
+mgp-clone-kftimyaht-
+talha-s-projects-4a0
+c8b7c.vercel.app    
+ ΓùÅ Error        
+Production      5s  
+         
+piaic007-4532     
+
+https://gmgp-clone-kftimyaht-talha-s-projects-4a0c8b7c.vercel.app

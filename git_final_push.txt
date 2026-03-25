@@ -1,0 +1,28 @@
+﻿git : To https://git
+hub.com/talhs999/gmg
+p.git
+At line:1 char:147
++ ... ve 
+CVE-2025-66478 
+blocking Vercel 
+deploy" 2>&1; git 
+push 2>&1 | Out-F 
+...
++                   
+                    
+              
+~~~~~~~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (To h   
+ ttps://github.c    
+om/talhs999/gmg    
+p.git:String) [    
+], RemoteExcept    
+ion
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+   a749d08..ed1bb01 
+ main -> main

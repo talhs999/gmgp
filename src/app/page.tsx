@@ -82,10 +82,10 @@ export default function HomePage() {
           <p className="text-center text-gray-500 text-sm mb-10">See what our customers are cooking</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "https://www.youtube.com/embed/3f6RJIO4G5I",
-              "https://www.youtube.com/embed/LGrH-gq4Vq0",
-              "https://www.youtube.com/embed/gEWzFCXz-1U",
-              "https://www.youtube.com/embed/XYpXoXbIU6U",
+              "https://www.youtube.com/embed/nJuLheO6I-o",
+              "https://www.youtube.com/embed/AmC9SmCBUj4",
+              "https://www.youtube.com/embed/1Fi6wE0T63o",
+              "https://www.youtube.com/embed/V3gtyzGEyR8",
             ].map((src, i) => (
               <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md">
                 <iframe
