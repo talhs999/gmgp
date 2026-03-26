@@ -18,14 +18,20 @@ const links = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isAdmin, loading } = useAuth();
+  const { user, profile, isAdmin, loading } = useAuth();
 
   useEffect(() => {
+    // Wait until loading finishes AND profile exists so we don't boot real admins too early
     if (!loading) {
-      if (!user) router.push("/login");
-      else if (!isAdmin) router.push("/");
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+      if (profile) {
+        if (!isAdmin) router.push("/");
+      }
     }
-  }, [user, isAdmin, loading, router]);
+  }, [user, isAdmin, loading, router, profile]);
 
   if (loading) {
     return (
