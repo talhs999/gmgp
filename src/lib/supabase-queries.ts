@@ -47,19 +47,37 @@ export async function getRelatedProducts(categoryId: string, excludeId: string):
 }
 
 export async function createProduct(product: Omit<Product, "id" | "created_at" | "category">): Promise<Product | null> {
+  console.log("createProduct Payload:", product);
   const { data, error } = await supabaseAdmin().from("products")
     .insert(product)
     .select()
     .single();
-  if (error) { console.error("createProduct:", error); return null; }
+  if (error) { 
+    console.error("createProduct Error:", {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    }); 
+    return null; 
+  }
   return data as Product;
 }
 
 export async function updateProduct(id: string, product: Partial<Product>): Promise<boolean> {
+  console.log("updateProduct ID:", id, "Payload:", product);
   const { error } = await supabaseAdmin().from("products")
     .update(product)
     .eq("id", id);
-  if (error) { console.error("updateProduct:", error); return false; }
+  if (error) { 
+    console.error("updateProduct Error:", {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    });
+    return false; 
+  }
   return true;
 }
 

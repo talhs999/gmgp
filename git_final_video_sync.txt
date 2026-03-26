@@ -1,0 +1,19 @@
+﻿git : To https://github.com/
+talhs999/gmgp.git
+At line:1 char:89
++ ... ace 4th video ID with 
+user provided link" 2>&1; 
+git push 2>&1 | Out-F ...
++                           
+                          
+~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (To ht  
+  tps://github.com/talhs9   
+ 99/gmgp.git:String) [],    
+ RemoteException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+   108a3ea..3adb977  main 
+-> main

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { updateProduct, getCategories } from "@/lib/supabase-queries";
+import { updateProduct, getCategories, deleteProduct } from "@/lib/supabase-queries";
 import { Category } from "@/lib/types";
 
 interface Props {
@@ -17,6 +17,8 @@ export default function EditProductPage({ params }: Props) {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState<any>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [error, setError] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -30,7 +32,9 @@ export default function EditProductPage({ params }: Props) {
     imageUrl: "",
     leanness: 5,
     firmness: 5,
-    richness: 5
+    richness: 5,
+    isFeatured: false,
+    isBestSeller: false
   });
 
   useEffect(() => {
@@ -56,11 +60,25 @@ export default function EditProductPage({ params }: Props) {
             imageUrl: found.image_url || "",
             leanness: found.leanness_rating || 5,
             firmness: found.firmness_rating || 5,
-            richness: found.richness_rating || 5
+            richness: found.richness_rating || 5,
+            isFeatured: found.is_featured,
+            isBestSeller: found.is_best_seller
           });
         }
       });
   }, [id]);
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    setDeleting(true);
+    const ok = await deleteProduct(id);
+    if (ok) {
+      router.push("/admin/products");
+    } else {
+      setError("Failed to delete product.");
+      setDeleting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +96,9 @@ export default function EditProductPage({ params }: Props) {
       image_url: form.imageUrl,
       leanness_rating: Number(form.leanness),
       firmness_rating: Number(form.firmness),
-      richness_rating: Number(form.richness)
+      richness_rating: Number(form.richness),
+      is_featured: form.isFeatured,
+      is_best_seller: form.isBestSeller,
     };
 
     const ok = await updateProduct(id, updates);
@@ -87,7 +107,7 @@ export default function EditProductPage({ params }: Props) {
     if (ok) {
       router.push("/admin/products");
     } else {
-      alert("Failed to save product. Please try again.");
+      setError("Failed to save product. Please try again.");
     }
   };
 
@@ -114,8 +134,13 @@ export default function EditProductPage({ params }: Props) {
             <p className="text-gray-500 text-sm mt-1">Editing {product.name}</p>
           </div>
         </div>
-        <button className="btn-outline border-red-200 text-red-600 hover:bg-red-50 px-4 py-2 flex items-center gap-2">
-          <Trash2 size={16} /> Delete
+        <button 
+          type="button"
+          onClick={handleDelete}
+          disabled={deleting}
+          className="btn-outline border-red-200 text-red-600 hover:bg-red-50 px-4 py-2 flex items-center gap-2"
+        >
+          <Trash2 size={16} /> {deleting ? "Deleting..." : "Delete"}
         </button>
       </div>
 
@@ -243,12 +268,28 @@ export default function EditProductPage({ params }: Props) {
               <label className="block text-xs font-bold uppercase tracking-widest mb-2 text-gray-500">Badge</label>
               <input type="text" name="badge" value={form.badge} onChange={handleChange} className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-black rounded-lg" />
             </div>
-            <div className="flex items-center gap-3 h-full pt-6">
-              <input type="checkbox" id="inStock" name="inStock" checked={form.inStock} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
-              <label htmlFor="inStock" className="text-sm font-bold">Product is In Stock</label>
+            <div className="grid grid-cols-1 gap-2 pt-2">
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="inStock" name="inStock" checked={form.inStock} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
+                <label htmlFor="inStock" className="text-sm font-bold">Product is In Stock</label>
+              </div>
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="isFeatured" name="isFeatured" checked={form.isFeatured} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
+                <label htmlFor="isFeatured" className="text-sm font-bold">Featured Product</label>
+              </div>
+              <div className="flex items-center gap-3">
+                <input type="checkbox" id="isBestSeller" name="isBestSeller" checked={form.isBestSeller} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
+                <label htmlFor="isBestSeller" className="text-sm font-bold">Best Seller</label>
+              </div>
             </div>
           </div>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm font-bold">
+            {error}
+          </div>
+        )}
 
         {/* Submit */}
         <div className="flex justify-end pt-4 border-t border-gray-200">
