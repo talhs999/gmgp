@@ -3,7 +3,9 @@ import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Upload, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { MOCK_PRODUCTS } from "@/lib/products";
+import { supabase } from "@/lib/supabase";
+import { updateProduct, getCategories } from "@/lib/supabase-queries";
+import { Category } from "@/lib/types";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -14,6 +16,7 @@ export default function EditProductPage({ params }: Props) {
   const { id } = use(params);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState<any>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const [form, setForm] = useState({
     name: "",
@@ -31,34 +34,61 @@ export default function EditProductPage({ params }: Props) {
   });
 
   useEffect(() => {
-    const found = MOCK_PRODUCTS.find(p => p.id === id);
-    if (found) {
-      setProduct(found);
-      setForm({
-        name: found.name,
-        slug: found.slug,
-        price: found.price.toString(),
-        comparePrice: found.compare_at_price?.toString() || "",
-        description: found.description || "",
-        categoryId: found.category_id || "beef",
-        inStock: found.in_stock,
-        badge: found.badge || "",
-        imageUrl: found.image_url,
-        leanness: found.leanness_rating || 5,
-        firmness: found.firmness_rating || 5,
-        richness: found.richness_rating || 5
+    getCategories().then(setCategories);
+    
+    supabase
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .single()
+      .then(({ data: found }) => {
+        if (found) {
+          setProduct(found);
+          setForm({
+            name: found.name,
+            slug: found.slug,
+            price: found.price?.toString() || "",
+            comparePrice: found.compare_at_price?.toString() || "",
+            description: found.description || "",
+            categoryId: found.category_id || "",
+            inStock: found.in_stock,
+            badge: found.badge || "",
+            imageUrl: found.image_url || "",
+            leanness: found.leanness_rating || 5,
+            firmness: found.firmness_rating || 5,
+            richness: found.richness_rating || 5
+          });
+        }
       });
-    }
   }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulating save for now since mock data is used
-    setTimeout(() => {
-      setLoading(false);
+    
+    const updates = {
+      name: form.name,
+      slug: form.slug,
+      price: parseFloat(form.price),
+      compare_at_price: form.comparePrice ? parseFloat(form.comparePrice) : null,
+      description: form.description,
+      category_id: form.categoryId || null,
+      in_stock: form.inStock,
+      badge: form.badge || null,
+      image_url: form.imageUrl,
+      leanness_rating: Number(form.leanness),
+      firmness_rating: Number(form.firmness),
+      richness_rating: Number(form.richness)
+    };
+
+    const ok = await updateProduct(id, updates);
+    setLoading(false);
+    
+    if (ok) {
       router.push("/admin/products");
-    }, 1000);
+    } else {
+      alert("Failed to save product. Please try again.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -117,14 +147,10 @@ export default function EditProductPage({ params }: Props) {
             <div>
               <label className="block text-xs font-bold uppercase tracking-widest mb-2 text-gray-500">Category *</label>
               <select name="categoryId" required value={form.categoryId} onChange={handleChange} className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-black rounded-lg bg-white">
-                <option value="beef">Beef</option>
-                <option value="lamb">Lamb</option>
-                <option value="pork">Pork</option>
-                <option value="chicken">Chicken</option>
-                <option value="wagyu">Wagyu</option>
-                <option value="bbq">BBQ Packs</option>
-                <option value="sausages">Sausages</option>
-                <option value="burgers">Burgers</option>
+                <option value="">Select a category...</option>
+                {categories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
               </select>
             </div>
           </div>
