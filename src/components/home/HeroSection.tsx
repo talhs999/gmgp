@@ -64,7 +64,7 @@ export default function HeroSection() {
           <a href="/shop" className="btn-accent px-10 py-4 text-base">
             Shop Now
           </a>
-          <a href="/membership" className="btn-outline border-white text-white hover:bg-white hover:text-black px-10 py-4 text-base">
+          <a href="/membership" className="border-2 border-white text-white hover:bg-white hover:text-black font-bold uppercase tracking-widest px-10 py-4 text-base transition-colors">
             Join Membership
           </a>
         </div>
