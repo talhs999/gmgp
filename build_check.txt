@@ -1,0 +1,83 @@
+﻿
+> gmgp-clone@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.14
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 77s
+   Linting and checking validity of types ...
+node.exe : Failed 
+to compile.
+At line:1 char:1
++ & 
+"D:\node/node.exe" "
+D:\node/node_modules
+/npm/bin/npm-cli.js"
+ run bu ...
++ ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Fail   
+ ed to compile.:    
+String) [], Rem    
+oteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+
+./src/app/api/seed/r
+oute.ts:43:33
+Type error: Type 
+'null' cannot be 
+used as an index 
+type.
+
+[0m [90m 41 
+|[39m           
+slug[33m:[39m prod
+[33m.[39mslug[33m
+,[39m
+ [90m 42 |[39m    
+       description[
+33m:[39m prod[33m.
+[39mdescription[33
+m,[39m
+[31m[1m>[22m[39m
+[90m 43 |[39m     
+      category_id[3
+3m:[39m catIdMap[pr
+od[33m.[39mcategor
+y_id][33m,[39m 
+[90m// use the 
+mapped UUID![39m
+ [90m    |[39m    
+                    
+         
+[31m[1m^[22m[39m
+ [90m 44 |[39m    
+       
+price[33m:[39m pro
+d[33m.[39mprice[3
+3m,[39m
+ [90m 45 |[39m    
+       compare_at_pr
+ice[33m:[39m prod
+[33m.[39mcompare_at
+_price [33m||[39m 
+[36mnull[39m[33m,
+[39m
+ [90m 46 |[39m    
+       image_url[33
+m:[39m prod[33m.[
+39mimage_url[33m,[
+39m[0m
+Next.js build 
+worker exited with 
+code: 1 and signal: 
+null

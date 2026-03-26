@@ -1,0 +1,27 @@
+﻿git : To https://git
+hub.com/talhs999/gmg
+p.git
+At line:1 char:112
++ ...  -m "Temp: 
+Add seed and debug 
+env routes" 2>&1; 
+git push 2>&1 | 
+Out-F ...
++                   
+                    
+              
+~~~~~~~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (To h   
+ ttps://github.c    
+om/talhs999/gmg    
+p.git:String) [    
+], RemoteExcept    
+ion
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+   d76603a..2193cc5 
+ main -> main

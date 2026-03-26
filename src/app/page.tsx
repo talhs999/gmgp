@@ -90,15 +90,9 @@ export default function HomePage() {
               <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md group">
                 <img
                   src={src}
-                  alt={`Cooking video ${i + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  alt={`Premium Cut ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] ease-linear group-hover:scale-110 scale-105 animate-pulse-slow"
                 />
-                {/* Simulated Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center pl-1 shadow-lg cursor-pointer">
-                    <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  </div>
-                </div>
               </div>
             ))}
           </div>

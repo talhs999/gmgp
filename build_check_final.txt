@@ -1,0 +1,46 @@
+﻿
+> gmgp-clone@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.14
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 37.4s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/17) ...
+   Generating static pages (4/17) 
+   Generating static pages (8/17) 
+   Generating static pages (12/17) 
+ Γ£ô Generating static pages (17/17)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+Γöî Γùï /                                    5.01 kB         170 kB
+Γö£ Γùï /_not-found                            994 B         103 kB
+Γö£ Γùï /account                             4.55 kB         161 kB
+Γö£ Γùï /admin                                3.7 kB         157 kB
+Γö£ Γùï /admin/categories                    3.29 kB         156 kB
+Γö£ Γùï /admin/orders                        3.21 kB         156 kB
+Γö£ Γùï /admin/products                      3.28 kB         165 kB
+Γö£ ╞Æ /admin/products/[id]                 4.36 kB         161 kB
+Γö£ Γùï /admin/products/new                  4.24 kB         161 kB
+Γö£ Γùï /admin/users                         3.07 kB         156 kB
+Γö£ ╞Æ /api/debug-admin                       122 B         102 kB
+Γö£ Γùï /checkout                            4.17 kB         169 kB
+Γö£ Γùï /login                               1.22 kB         158 kB
+Γö£ Γùï /membership                          1.28 kB         107 kB
+Γö£ ╞Æ /products/[slug]                     4.79 kB         169 kB
+Γö£ Γùï /register                            1.49 kB         158 kB
+Γöö Γùï /shop                                4.54 kB         169 kB
++ First Load JS shared by all             102 kB
+  Γö£ chunks/255-38b49df12a94ee57.js         46 kB
+  Γö£ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+  Γöö other shared chunks (total)          1.99 kB
+
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+

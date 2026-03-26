@@ -10,15 +10,20 @@ import { CheckCircle } from "lucide-react";
 export default function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
   const { user } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  
+  // New Location state
+  const [location, setLocation] = useState("perth"); // "perth" or "outside"
+  const shippingFee = location === "perth" ? 100 : 200;
+
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "",
     address: "", suburb: "", postcode: "", phone: ""
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleCheckout = async (e: React.FormEvent) => {
@@ -30,7 +35,7 @@ export default function CheckoutPage() {
       full_name: `${form.firstName} ${form.lastName}`,
       address: form.address,
       suburb: form.suburb,
-      state: "NSW",
+      state: location === "perth" ? "WA" : "Other",
       postcode: form.postcode,
       phone: form.phone,
     };
@@ -42,42 +47,26 @@ export default function CheckoutPage() {
       weight_option: item.weight_option?.label ?? null,
     }));
 
-    const total = getTotal() + 15; // +$15 shipping
+    const total = getTotal() + shippingFee;
 
     if (user) {
       const order = await createOrder(user.id, total, orderItems, address);
       if (order) {
         clearCart();
-        setSuccess(true);
+        router.push(`/checkout/success?id=${order.id}`);
       } else {
         setError("Failed to place order. Please try again.");
       }
     } else {
-      // Guest: show success without saving to DB
+      // Guest order flow
       setTimeout(() => {
         clearCart();
-        setSuccess(true);
+        // Since guest doesn't have an order saved in DB for this mockup demo, use a fake ID
+        router.push(`/checkout/success?guest=true&total=${total}&fee=${shippingFee}`);
       }, 800);
     }
     setLoading(false);
   };
-
-  if (success) {
-    return (
-      <div className="pt-32 pb-20 container-custom text-center min-h-[60vh]">
-        <CheckCircle size={64} className="mx-auto text-green-500 mb-6" />
-        <h1 className="text-3xl font-black uppercase tracking-tight mb-3">Order Placed! 🎉</h1>
-        <p className="text-gray-500 mb-2">Thank you for your order!</p>
-        <p className="text-gray-400 text-sm mb-8">
-          {user ? "You can track your order in your account." : "We'll be in touch via email."}
-        </p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/shop" className="btn-primary inline-block">Continue Shopping</Link>
-          {user && <Link href="/account" className="btn-outline inline-block">View My Orders</Link>}
-        </div>
-      </div>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -97,7 +86,7 @@ export default function CheckoutPage() {
         {!user && (
           <div className="bg-blue-50 border border-blue-200 text-blue-700 text-sm px-4 py-3 rounded-lg mb-6 flex items-center gap-3">
             <span>💡</span>
-            <span><strong>Sign in</strong> to save your order history. <Link href="/login" className="underline font-bold">Sign In</Link> or continue as guest.</span>
+            <span><strong>Sign in</strong> to track your order easily. <Link href="/login" className="underline font-bold">Sign In</Link> or continue as guest.</span>
           </div>
         )}
 
@@ -121,12 +110,12 @@ export default function CheckoutPage() {
                   <input required type="text" name="lastName" value={form.lastName} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
-                <div>
+                <div className="col-span-2 md:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Address</label>
                   <input required type="email" name="email" value={form.email} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
-                <div>
+                <div className="col-span-2 md:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Phone</label>
                   <input required type="tel" name="phone" value={form.phone} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
@@ -134,6 +123,21 @@ export default function CheckoutPage() {
               </div>
 
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4 pt-4">Delivery Address</h2>
+              
+              <div className="mb-4 bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                <label className="block text-sm font-bold tracking-tight mb-2">Select Delivery Region</label>
+                <div className="flex flex-col gap-2">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="radio" name="location" value="perth" checked={location === "perth"} onChange={() => setLocation("perth")} className="w-4 h-4 text-black focus:ring-black" />
+                    <span className="text-sm">Within Perth (Delivery: $100 AUD)</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="radio" name="location" value="outside" checked={location === "outside"} onChange={() => setLocation("outside")} className="w-4 h-4 text-black focus:ring-black" />
+                    <span className="text-sm">Outside Perth (Delivery: $200 AUD)</span>
+                  </label>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Street Address</label>
@@ -151,6 +155,18 @@ export default function CheckoutPage() {
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
               </div>
+
+              <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4 pt-4">Payment Method</h2>
+              <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">
+                <label className="flex items-start gap-3">
+                  <input type="radio" defaultChecked className="w-4 h-4 mt-0.5 text-black focus:ring-black" />
+                  <div>
+                    <span className="block text-sm font-bold">Cash on Delivery (COD)</span>
+                    <span className="block text-xs text-gray-500 mt-1">Pay with cash upon delivery of your order.</span>
+                  </div>
+                </label>
+              </div>
+
             </form>
           </div>
 
@@ -169,7 +185,7 @@ export default function CheckoutPage() {
                       {item.weight_option && <p className="text-gray-500 text-xs">{item.weight_option.label}</p>}
                       <div className="flex justify-between mt-1">
                         <span className="text-gray-500">Qty: {item.quantity}</span>
-                        <span className="font-bold">${((item.weight_option ? item.weight_option.price : item.product.price) * item.quantity).toFixed(2)}</span>
+                        <span className="font-bold">AUD ${( (item.weight_option ? item.weight_option.price : item.product.price) * item.quantity ).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -179,23 +195,23 @@ export default function CheckoutPage() {
               <div className="border-t mt-6 pt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-gray-500">
                   <span>Subtotal</span>
-                  <span>${getTotal().toFixed(2)}</span>
+                  <span>AUD ${getTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-500">
-                  <span>Shipping (Saturday Delivery)</span>
-                  <span>$15.00</span>
+                  <span>Shipping ({location === "perth" ? "Within Perth" : "Outside Perth"})</span>
+                  <span>AUD ${shippingFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-black text-lg pt-2 border-t mt-2">
                   <span>Total</span>
-                  <span className="text-accent">${(getTotal() + 15).toFixed(2)}</span>
+                  <span className="text-accent">AUD ${(getTotal() + shippingFee).toFixed(2)}</span>
                 </div>
               </div>
 
               <button 
                 form="checkout-form" type="submit" disabled={loading}
-                className="w-full btn-accent py-4 mt-6 text-base"
+                className="w-full btn-accent py-4 mt-6 text-base shadow-lg shadow-red-500/20"
               >
-                {loading ? "Processing..." : "Place Order"}
+                {loading ? "Processing..." : "Place Order & Pay on Delivery"}
               </button>
             </div>
           </div>

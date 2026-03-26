@@ -86,12 +86,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.name}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="font-black text-accent text-lg">
-            ${product.price.toFixed(2)}
+          <span className="text-xl font-black">
+            A${product.price.toFixed(2)}
           </span>
           {product.compare_at_price && (
-            <span className="text-gray-400 text-sm line-through">
-              ${product.compare_at_price.toFixed(2)}
+            <span className="text-sm font-bold text-gray-400 line-through">
+              A${product.compare_at_price.toFixed(2)}
             </span>
           )}
         </div>

@@ -1,0 +1,32 @@
+﻿node.exe : 
+Retrieving 
+projectΓÇª
+At line:1 char:1
++ & 
+"D:\node/node.exe" "
+D:\node/node_modules
+/npm/bin/npx-cli.js"
+ vercel ...
++ ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo  
+            : NotS  
+  pecified: (Retr   
+ ieving projectΓ    
+Çª:String) [],     
+RemoteException
+    + FullyQualifie 
+   dErrorId : Nati  
+  veCommandError
+ 
+> Prebuilt 
+deployment cannot 
+be created because 
+`vercel build` 
+failed with error:
+
+Error: Unable to 
+find lambda for 
+route: /admin/orders
