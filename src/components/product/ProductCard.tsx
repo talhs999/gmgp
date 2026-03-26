@@ -10,9 +10,32 @@ interface ProductCardProps {
   product: Product;
 }
 
+// High-quality fallback images per category slug (or generic)
+const FALLBACKS: Record<string, string> = {
+  lamb:    "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=600&q=80",
+  beef:    "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+  steaks:  "https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80",
+  wagyu:   "https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=600&q=80",
+  pork:    "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&q=80",
+  chicken: "https://images.unsplash.com/photo-1598103442097-8b74394b95c3?w=600&q=80",
+  bbq:     "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&q=80",
+  default: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=600&q=80",
+};
+
 export default function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [adding, setAdding] = useState(false);
+
+  // Pick a category-appropriate fallback
+  const categorySlug = product.category?.slug ?? "";
+  const fallbackSrc =
+    FALLBACKS[categorySlug] ||
+    FALLBACKS[Object.keys(FALLBACKS).find((k) => categorySlug.includes(k)) ?? "default"] ||
+    FALLBACKS.default;
+
+  const [imgSrc, setImgSrc] = useState(
+    product.image_url?.startsWith("http") ? product.image_url : fallbackSrc
+  );
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -31,11 +54,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         <Image
-          src={product.image_url}
+          src={imgSrc}
           alt={product.name}
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 50vw, 33vw"
+          onError={() => setImgSrc(fallbackSrc)}
+          unoptimized={!imgSrc.includes("unsplash.com") && !imgSrc.includes("supabase.co")}
         />
 
         {/* Badges */}

@@ -1,0 +1,20 @@
+﻿git : To https://github.com/
+talhs999/gmgp.git
+At line:1 char:99
++ ...  EditProduct fixes 
+with error visibility" 
+2>&1; git push 2>&1 | Out-F 
+...
++                           
+                          
+~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (To ht  
+  tps://github.com/talhs9   
+ 99/gmgp.git:String) [],    
+ RemoteException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+   3adb977..706a558  main 
+-> main

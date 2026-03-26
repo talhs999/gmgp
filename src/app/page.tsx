@@ -1,4 +1,5 @@
 import HeroSection from "@/components/home/HeroSection";
+import MainSlider from "@/components/home/MainSlider";
 import CountdownTimer from "@/components/home/CountdownTimer";
 import Marquee from "@/components/home/Marquee";
 import ProductTabs from "@/components/home/ProductTabs";
@@ -74,6 +75,9 @@ export default function HomePage() {
           </a>
         </div>
       </section>
+
+      {/* 8. Premium Promotional Slider */}
+      <MainSlider />
 
       {/* 8. Video Section */}
       <section className="py-16">
