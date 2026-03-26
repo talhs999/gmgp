@@ -256,7 +256,7 @@ export async function getAdminStats() {
   };
 }
 
-export async function cancelOrder(orderId: string): Promise<boolean> {
+export async function cancelOrder(orderId: string, reason?: string): Promise<boolean> {
   try {
     const { data: order } = await supabaseAdmin()
       .from("orders")
@@ -266,7 +266,10 @@ export async function cancelOrder(orderId: string): Promise<boolean> {
 
     const { error } = await supabaseAdmin()
       .from("orders")
-      .update({ status: "cancelled" })
+      .update({ 
+        status: "cancelled",
+        cancellation_reason: reason || "User cancelled"
+      })
       .eq("id", orderId);
       
     if (error) {
@@ -283,6 +286,31 @@ export async function cancelOrder(orderId: string): Promise<boolean> {
     return true;
   } catch (err) {
     console.error("cancelOrder Catch:", err);
+    return false;
+  }
+}
+
+export async function saveOrderRating(
+  orderId: string, 
+  rating: number, 
+  comment?: string
+): Promise<boolean> {
+  try {
+    const { error } = await supabaseAdmin()
+      .from("orders")
+      .update({ 
+        rating,
+        rating_comment: comment 
+      })
+      .eq("id", orderId);
+
+    if (error) {
+      console.error("saveOrderRating Error:", error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("saveOrderRating Catch:", err);
     return false;
   }
 }

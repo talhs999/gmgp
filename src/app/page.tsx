@@ -82,10 +82,10 @@ export default function HomePage() {
           <p className="text-center text-gray-500 text-sm mb-10">See what our customers are cooking</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "eKkXvY9CqOQ", // Steak Searing
-              "N-yFkFm7mI8", // Butcher Shop preparation
-              "t_KdBWss7PA", // Grilling Meat
-              "rXgZ6Z22cFE", // Slicing Meat
+              "6JtLxCszFsE", // New Short 1
+              "3eGqirz2P7Y", // New Short 2
+              "i2xKkIQ8eNU", // New Short 3
+              "vKzW-M1_U_0", // 4th High quality meat short
             ].map((ytId, i) => (
               <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-black shadow-md group">
                 <iframe

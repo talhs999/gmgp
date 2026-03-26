@@ -1,8 +1,8 @@
 ﻿git : To https://github.com/
 talhs999/gmgp.git
-At line:1 char:111
-+ ...  Add PDF Invoice 
-download and final sync" 
+At line:1 char:91
++ ... h: Clean video 
+parameters and PDF layout" 
 2>&1; git push 2>&1 | Out-F 
 ...
 +                           
@@ -16,5 +16,5 @@ download and final sync"
     + FullyQualifiedErrorId 
     : NativeCommandError
  
-   aa6a48f..206183b  main 
+   34cf49f..bb060f9  main 
 -> main

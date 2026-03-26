@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getUserOrders, updateProfile } from "@/lib/supabase-queries";
+import { getUserOrders, updateProfile, cancelOrder } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
 import Link from "next/link";
-import { Package, User as UserIcon, LogOut, Heart, CheckCircle } from "lucide-react";
+import { Package, User as UserIcon, LogOut, Heart, CheckCircle, XCircle } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -23,13 +23,40 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Cancellation state
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelling, setCancelling] = useState(false);
+
   useEffect(() => {
     if (user) {
       setFullName(profile?.full_name || user.user_metadata?.full_name || "");
       setPhone(profile?.phone || "");
-      getUserOrders(user.id).then((data) => { setOrders(data); setOrdersLoading(false); });
+      fetchOrders();
     }
   }, [user, profile]);
+
+  const fetchOrders = () => {
+    if (user) {
+      getUserOrders(user.id).then((data) => {
+        setOrders(data);
+        setOrdersLoading(false);
+      });
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    if (!selectedOrder || !cancelReason.trim()) return;
+    setCancelling(true);
+    const ok = await cancelOrder(selectedOrder, cancelReason);
+    if (ok) {
+      await fetchOrders();
+      setShowCancelModal(false);
+      setCancelReason("");
+    }
+    setCancelling(false);
+  };
 
   const handleSaveProfile = async () => {
     if (!user) return;
@@ -97,7 +124,7 @@ export default function AccountPage() {
           <div className="md:col-span-8 lg:col-span-9 space-y-8">
             
             {/* Order History */}
-            <div id="orders" className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <div id="orders" className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-black">
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4 mb-4">Recent Orders</h2>
               {ordersLoading ? (
                 <div className="space-y-3">
@@ -115,14 +142,25 @@ export default function AccountPage() {
                 <div className="space-y-3">
                   {orders.map((order) => (
                     <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100">
-                      <div>
+                      <div className="flex-1">
                         <p className="font-bold text-sm text-accent">#{order.id.slice(0, 8).toUpperCase()}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{new Date(order.created_at).toLocaleDateString("en-AU", { day: "2-digit", month: "long", year: "numeric" })}</p>
                       </div>
-                      <span className={`text-[11px] font-bold uppercase px-2.5 py-1 rounded-full ${statusColors[order.status]}`}>
-                        {order.status}
-                      </span>
-                      <span className="font-black text-lg text-accent">${Number(order.total).toFixed(2)}</span>
+                      <div className="flex items-center gap-4">
+                        <span className={`text-[11px] font-bold uppercase px-2.5 py-1 rounded-full ${statusColors[order.status]}`}>
+                          {order.status}
+                        </span>
+                        <span className="font-black text-lg text-accent">${Number(order.total).toFixed(2)}</span>
+                        
+                        {order.status === 'pending' && (
+                          <button 
+                            onClick={() => { setSelectedOrder(order.id); setShowCancelModal(true); }}
+                            className="text-xs font-bold text-red-500 hover:text-red-700 underline flex items-center gap-1"
+                          >
+                            <XCircle size={14} /> Cancel
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -130,7 +168,7 @@ export default function AccountPage() {
             </div>
 
             {/* Profile Details */}
-            <div id="profile" className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <div id="profile" className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-black">
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4 mb-4">Account Details</h2>
               <div className="space-y-4 max-w-md">
                 <div>
@@ -156,6 +194,42 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
+
+      {/* Cancellation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-2xl p-8 shadow-2xl animate-in zoom-in duration-200 text-black">
+            <h3 className="text-xl font-black uppercase mb-2">Cancel Order</h3>
+            <p className="text-gray-500 text-sm mb-6">Are you sure you want to cancel this order? Please tell us why.</p>
+            
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Reason for Cancellation</label>
+            <textarea 
+              autoFocus
+              required
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              placeholder="e.g., Wrong items selected, changed my mind..."
+              className="w-full border border-gray-200 p-4 rounded-xl text-sm min-h-[120px] focus:border-black focus:outline-none mb-6"
+            />
+            
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 py-3 font-bold uppercase tracking-widest text-xs border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                Back
+              </button>
+              <button 
+                onClick={handleCancelRequest}
+                disabled={!cancelReason.trim() || cancelling}
+                className="flex-1 py-3 font-bold uppercase tracking-widest text-xs bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                {cancelling ? "Cancelling..." : "Confirm Cancel"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,30 +1,44 @@
 "use client";
 import Link from "next/link";
-import { CheckCircle, Download, FileText, ArrowLeft } from "lucide-react";
+import { CheckCircle, Download, ArrowLeft, Star, Send } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { saveOrderRating } from "@/lib/supabase-queries";
+import { useState } from "react";
 import { Suspense } from "react";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("id");
-  const isGuest = searchParams.get("guest") === "true";
-  const total = searchParams.get("total") || "0.00";
-  const fee = searchParams.get("fee") || "100";
+  const isGuest = searchParams.get("guest");
+  const total = searchParams.get("total") || "0";
+  const fee = searchParams.get("fee") || "0";
+
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [comment, setComment] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleRatingSubmit = async () => {
+    if (rating === 0 || !orderId) return;
+    setSubmitting(true);
+    const ok = await saveOrderRating(orderId, rating, comment);
+    if (ok) setSubmitted(true);
+    setSubmitting(false);
+  };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 border border-gray-100 shadow-xl rounded-2xl text-center relative overflow-hidden">
-      {/* Decorative background element */}
-      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-600" />
-      
-      <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-        <CheckCircle size={40} className="text-green-500" />
+    <div className="pt-32 pb-20 container-custom max-w-2xl text-center">
+      <div className="flex justify-center mb-6">
+        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+          <CheckCircle size={48} />
+        </div>
       </div>
-      
-      <h1 className="text-4xl font-black uppercase tracking-tight mb-3">Order Confirmed!</h1>
+      <h1 className="text-4xl font-black uppercase tracking-tight mb-2">Order Confirmed!</h1>
       <p className="text-gray-500 mb-8 text-lg">Thank you for your purchase. Your premium meat is being prepared.</p>
 
       {/* Invoice Card */}
-      <div id="invoice-card" className="bg-gray-50 p-6 rounded-xl border border-gray-200 text-left mb-10 print:m-0 print:p-0 print:border-none print:bg-white">
+      <div id="invoice-card" className="bg-gray-50 p-6 rounded-xl border border-gray-200 text-left mb-8 print:m-0 print:p-0 print:border-none print:bg-white text-black">
         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
           <div>
             <h2 className="font-bold text-gray-900 uppercase tracking-widest text-sm mb-1">Invoice Summary</h2>
@@ -48,7 +62,7 @@ function SuccessContent() {
           </div>
           <div className="flex justify-between pt-2 border-t mt-2">
             <span className="text-gray-600 font-bold">Total Amount Due:</span>
-            <span className="font-black text-xl text-accent">AUD ${!orderId ? parseFloat(total).toFixed(2) : "--"}</span>
+            <span className="font-black text-xl text-accent">AUD ${orderId ? "--" : parseFloat(total).toFixed(2)}</span>
           </div>
           
           <div className="hidden print:block mt-8 pt-8 border-t border-dashed">
@@ -58,10 +72,49 @@ function SuccessContent() {
         </div>
       </div>
 
+      {/* Rating Section */}
+      {orderId && !submitted && (
+        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm mb-8 print:hidden transition-all text-black">
+          <h3 className="font-bold uppercase tracking-widest text-sm mb-4">Rate Your Experience</h3>
+          <div className="flex justify-center gap-2 mb-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onMouseEnter={() => setHover(star)}
+                onMouseLeave={() => setHover(0)}
+                onClick={() => setRating(star)}
+                className={`transition-colors ${(hover || rating) >= star ? "text-yellow-400" : "text-gray-200"}`}
+              >
+                <Star size={32} fill={(hover || rating) >= star ? "currentColor" : "none"} />
+              </button>
+            ))}
+          </div>
+          <textarea
+            placeholder="Tell us what you liked (optional)..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full border border-gray-100 p-3 rounded-lg text-sm mb-4 focus:outline-none focus:border-black min-h-[80px]"
+          />
+          <button
+            onClick={handleRatingSubmit}
+            disabled={rating === 0 || submitting}
+            className="btn-primary w-full flex items-center justify-center gap-2 py-3 disabled:opacity-50"
+          >
+            {submitting ? "Sending..." : "Submit Review"} <Send size={16} />
+          </button>
+        </div>
+      )}
+
+      {submitted && (
+        <div className="bg-green-50 border border-green-100 text-green-700 p-4 rounded-xl mb-8 flex items-center justify-center gap-2 animate-in fade-in zoom-in">
+          <CheckCircle size={20} /> <span className="font-bold">Thank you for your feedback!</span>
+        </div>
+      )}
+
       <div className="grid sm:grid-cols-2 gap-4 print:hidden">
         <button 
           onClick={() => window.print()}
-          className="btn-outline flex items-center justify-center gap-2 py-4 hover:bg-black hover:text-white transition-all transform hover:scale-[1.02]"
+          className="btn-outline flex items-center justify-center gap-2 py-4 hover:bg-black hover:text-white transition-all transform hover:scale-[1.02] text-black"
         >
           <Download size={18} /> Download PDF Invoice
         </button>

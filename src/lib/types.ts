@@ -53,6 +53,9 @@ export interface Order {
   address_snapshot: AddressSnapshot | null;
   created_at: string;
   order_items?: OrderItem[];
+  cancellation_reason?: string | null;
+  rating?: number | null;
+  rating_comment?: string | null;
 }
 
 export interface OrderItem {
