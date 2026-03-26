@@ -1,11 +1,12 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import ProductCard from "@/components/product/ProductCard";
 import { getProducts, getCategories } from "@/lib/supabase-queries";
 import { Product, Category } from "@/lib/types";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
-export default function ShopPage() {
+function ShopContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -13,14 +14,24 @@ export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [showFilters, setShowFilters] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const categorySlug = searchParams.get("category");
 
   useEffect(() => {
     Promise.all([getProducts(), getCategories()]).then(([prods, cats]) => {
       setProducts(prods);
       setCategories(cats);
+      
+      // Auto-filter by slug if present in URL
+      if (categorySlug) {
+        const found = cats.find(c => c.slug === categorySlug);
+        if (found) setActiveCategory(found.id);
+      }
+      
       setLoading(false);
     });
-  }, []);
+  }, [categorySlug]);
 
   const filtered = useMemo(() => {
     let list = [...products];
@@ -151,5 +162,13 @@ export default function ShopPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="pt-40 text-center text-gray-400">Loading shop...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }

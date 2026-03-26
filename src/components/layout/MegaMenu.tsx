@@ -25,7 +25,7 @@ export default function MegaMenu() {
           {categories.map((cat) => (
             <Link
               key={cat.slug}
-              href={`/shop/${cat.slug}`}
+              href={`/shop?category=${cat.slug}`}
               className="flex flex-col items-center gap-2 p-4 rounded-lg hover:bg-gray-50 hover:shadow-sm transition-all group"
             >
               <span className="text-3xl group-hover:scale-110 transition-transform">{cat.emoji}</span>

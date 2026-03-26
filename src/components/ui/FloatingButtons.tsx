@@ -6,6 +6,41 @@ import { useState, useEffect } from "react";
 export default function FloatingButtons() {
   const [showTop, setShowTop] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([
+    { role: "bot", text: "Hi! Welcome to GMGP. Kaise hain aap? How can I help you today?" }
+  ]);
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    const userMsg = input.trim();
+    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
+    setInput("");
+
+    // Simple AI Rule-set — Smart responding
+    setTimeout(() => {
+      let response = "I'm not sure about that, but our team can help! Reach out at support@gmgp.com.";
+      const low = userMsg.toLowerCase();
+
+      if (low.includes("hi") || low.includes("hello") || low.includes("asalam") || low.includes("hy")) {
+        response = "Assalam-o-Alaikum! Hello! Main apki kaise madad kar sakta hoon? Do you need help picking a cut or checking delivery?";
+      } else if (low.includes("biryani")) {
+        response = "Biryani ke liye humara 'Chicken Curry Cut' best hai. Yeh perfect pieces hote hain jo masala achay se absorb karte hain!";
+      } else if (low.includes("karahi")) {
+        response = "Karahi ke liye 'Chicken Karahi Cut' (medium pieces) select karein. Ye pakne mein bhi behter aur dikhne mein aala hota hai.";
+      } else if (low.includes("bbq") || low.includes("tikka")) {
+        response = "BBQ ke liye humara 'Chicken Breast Boneless' ya 'Chicken Drumsticks' try karein. Bohat juicy bante hain!";
+      } else if (low.includes("delivery") || low.includes("time") || low.includes("perth")) {
+        response = "Hum Perth mein deliver karte hain. Perth ke andar $100 aur Perth ke bahar $200 delivery fee hai. Most orders 24-48 hours mein deliver ho jate hain!";
+      } else if (low.includes("fresh") || low.includes("quality")) {
+        response = "Hamara meat 100% fresh aur premium quality ka hota hai. Freshness guaranteed!";
+      } else if (low.includes("buy") || low.includes("order") || low.includes("place")) {
+        response = "Order karna simple hai! Bas products ko cart mein dalain aur checkout pe Cash on Delivery select karein.";
+      }
+
+      setMessages(prev => [...prev, { role: "bot", text: response }]);
+    }, 600);
+  };
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 400);
@@ -34,13 +69,29 @@ export default function FloatingButtons() {
               <button onClick={() => setChatOpen(false)} className="text-white/70 hover:text-white">✕</button>
             </div>
             <div className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-3">
-              <div className="bg-white border p-3 rounded-lg text-sm self-start max-w-[85%]">
-                Hi there! Welcome to GMGP. Do you need help picking a cut or checking delivery?
-              </div>
+              {messages.map((m, i) => (
+                <div 
+                  key={i} 
+                  className={`p-3 rounded-lg text-sm max-w-[85%] ${
+                    m.role === 'bot' 
+                      ? "bg-white border self-start" 
+                      : "bg-black text-white self-end"
+                  }`}
+                >
+                  {m.text}
+                </div>
+              ))}
             </div>
             <div className="p-3 border-t bg-white flex gap-2">
-              <input type="text" placeholder="Type a message..." className="flex-1 border p-2 text-sm rounded focus:outline-none" />
-              <button className="bg-accent text-white px-3 py-2 text-sm font-bold rounded">Send</button>
+              <input 
+                type="text" 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Type a message..." 
+                className="flex-1 border p-2 text-sm rounded focus:outline-none text-black" 
+              />
+              <button onClick={handleSend} className="bg-accent text-white px-3 py-2 text-sm font-bold rounded">Send</button>
             </div>
           </div>
         )}
