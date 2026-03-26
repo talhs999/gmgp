@@ -82,20 +82,23 @@ export default function HomePage() {
           <p className="text-center text-gray-500 text-sm mb-10">See what our customers are cooking</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "https://videos.pexels.com/video-files/4106208/4106208-hd_1080_1920_24fps.mp4",
-              "https://videos.pexels.com/video-files/5903264/5903264-hd_1080_1920_30fps.mp4",
-              "https://videos.pexels.com/video-files/4252445/4252445-hd_1080_1920_30fps.mp4",
-              "https://videos.pexels.com/video-files/4106203/4106203-hd_1080_1920_24fps.mp4",
+              "https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80&crop=tall",
+              "https://images.unsplash.com/photo-1544025162-81e018d9ccb9?w=800&q=80&crop=tall",
+              "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80&crop=tall",
+              "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=800&q=80&crop=tall",
             ].map((src, i) => (
-              <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md">
-                <video
+              <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md group">
+                <img
                   src={src}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={`Cooking video ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+                {/* Simulated Play Button */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center pl-1 shadow-lg cursor-pointer">
+                    <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
