@@ -264,6 +264,7 @@ export async function cancelOrder(orderId: string, reason?: string): Promise<boo
       .eq("id", orderId)
       .single();
 
+    // Try to update with reason first
     const { error } = await supabaseAdmin()
       .from("orders")
       .update({ 
@@ -273,8 +274,17 @@ export async function cancelOrder(orderId: string, reason?: string): Promise<boo
       .eq("id", orderId);
       
     if (error) {
-      console.error("cancelOrder Error:", error);
-      return false;
+      console.warn("cancelOrder full update failed, retrying with status only:", error);
+      // Fallback for missing column
+      const { error: error2 } = await supabaseAdmin()
+        .from("orders")
+        .update({ status: "cancelled" })
+        .eq("id", orderId);
+      
+      if (error2) {
+        console.error("cancelOrder Fallback Error:", error2);
+        return false;
+      }
     }
     
     // Trigger cancellation email
@@ -286,6 +296,31 @@ export async function cancelOrder(orderId: string, reason?: string): Promise<boo
     return true;
   } catch (err) {
     console.error("cancelOrder Catch:", err);
+    return false;
+  }
+}
+
+export async function deleteOrder(orderId: string): Promise<boolean> {
+  try {
+    // First delete order items (foreign key constraint)
+    await supabaseAdmin()
+      .from("order_items")
+      .delete()
+      .eq("order_id", orderId);
+
+    // Then delete the order
+    const { error } = await supabaseAdmin()
+      .from("orders")
+      .delete()
+      .eq("id", orderId);
+
+    if (error) {
+      console.error("deleteOrder Error:", error);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("deleteOrder Catch:", err);
     return false;
   }
 }

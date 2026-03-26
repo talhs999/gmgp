@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getUserOrders, updateProfile, cancelOrder } from "@/lib/supabase-queries";
+import { getUserOrders, updateProfile, cancelOrder, deleteOrder } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
 import Link from "next/link";
-import { Package, User as UserIcon, LogOut, Heart, CheckCircle, XCircle } from "lucide-react";
+import { Package, User as UserIcon, LogOut, Heart, CheckCircle, XCircle, Trash2 } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700",
@@ -23,11 +23,12 @@ export default function AccountPage() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Cancellation state
+  // Cancellation & Deletion state
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [cancelReason, setCancelReason] = useState("");
   const [cancelling, setCancelling] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -47,17 +48,31 @@ export default function AccountPage() {
   };
 
   const handleCancelRequest = async () => {
-    if (!selectedOrder || !cancelReason.trim()) return;
+    if (!selectedOrder) return;
     setCancelling(true);
     const ok = await cancelOrder(selectedOrder, cancelReason);
     if (ok) {
       await fetchOrders();
       setShowCancelModal(false);
       setCancelReason("");
+    } else {
+      window.alert("Cancellation failed. Please try again.");
     }
     setCancelling(false);
   };
 
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm("Are you sure you want to delete this order record?")) return;
+    setDeleting(orderId);
+    const ok = await deleteOrder(orderId);
+    if (ok) {
+      await fetchOrders();
+    } else {
+      window.alert("Delete failed. Please try again.");
+    }
+    setDeleting(null);
+  };
+  
   const handleSaveProfile = async () => {
     if (!user) return;
     setSaving(true);
@@ -158,6 +173,16 @@ export default function AccountPage() {
                             className="text-xs font-bold text-red-500 hover:text-red-700 underline flex items-center gap-1"
                           >
                             <XCircle size={14} /> Cancel
+                          </button>
+                        )}
+
+                        {order.status === 'cancelled' && (
+                          <button 
+                            disabled={deleting === order.id}
+                            onClick={() => handleDeleteOrder(order.id)}
+                            className="text-xs font-bold text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors"
+                          >
+                            <Trash2 size={14} /> {deleting === order.id ? "Deleting..." : "Delete"}
                           </button>
                         )}
                       </div>
