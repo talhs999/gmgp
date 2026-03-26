@@ -81,7 +81,7 @@ export default function CartDrawer() {
                     {item.product.name}
                   </p>
                   <p className="text-accent font-bold text-sm mt-1">
-                    ${(item.product.price * item.quantity).toFixed(2)}
+                    A${(item.product.price * item.quantity).toFixed(2)}
                   </p>
                   <div className="flex items-center gap-2 mt-2">
                     <button
@@ -112,10 +112,10 @@ export default function CartDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="px-5 py-4 border-t border-gray-100 space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-sm">Subtotal</span>
-              <span className="font-black text-lg">${total.toFixed(2)}</span>
+          <div className="border-t border-gray-100 p-6 space-y-4 bg-white">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-500 font-bold uppercase tracking-widest">Subtotal</span>
+              <span className="font-black text-lg">A${getTotal().toFixed(2)}</span>
             </div>
             <p className="text-xs text-gray-500">Shipping calculated at checkout</p>
             <Link
