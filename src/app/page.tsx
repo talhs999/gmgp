@@ -82,17 +82,19 @@ export default function HomePage() {
           <p className="text-center text-gray-500 text-sm mb-10">See what our customers are cooking</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              "https://images.unsplash.com/photo-1558030006-450675393462?w=800&q=80&crop=tall",
-              "https://images.unsplash.com/photo-1544025162-81e018d9ccb9?w=800&q=80&crop=tall",
-              "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=800&q=80&crop=tall",
-              "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=800&q=80&crop=tall",
-            ].map((src, i) => (
-              <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-gray-100 shadow-md group">
-                <img
-                  src={src}
-                  alt={`Premium Cut ${i + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[10000ms] ease-linear group-hover:scale-110 scale-105 animate-pulse-slow"
+              "eKkXvY9CqOQ", // Steak Searing
+              "N-yFkFm7mI8", // Butcher Shop preparation
+              "t_KdBWss7PA", // Grilling Meat
+              "rXgZ6Z22cFE", // Slicing Meat
+            ].map((ytId, i) => (
+              <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-black shadow-md group">
+                <iframe
+                  className="absolute inset-0 w-full h-full object-cover scale-[1.5] pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity"
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0`}
+                  allow="autoplay; encrypted-media"
+                  frameBorder="0"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               </div>
             ))}
           </div>

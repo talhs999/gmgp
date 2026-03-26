@@ -1,0 +1,70 @@
+﻿
+> gmgp-clone@0.1.0 build
+> next build
+
+   Γû▓ Next.js 15.5.14
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 10.0s
+   Linting and checking validity of types ...
+node.exe : Failed to 
+compile.
+At line:1 char:1
++ & "D:\node/node.exe" "D:\n
+ode/node_modules/npm/bin/npm
+-cli.js" run bu ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (Faile  
+  d to compile.:String) [   
+ ], RemoteException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+
+./src/lib/supabase-queries.t
+s:49:33
+Type error: This expression 
+is not callable.
+  Type 'SupabaseClient<any, 
+"public", "public", any, 
+any>' has no call 
+signatures.
+
+[0m [90m 47 |[39m
+ [90m 48 |[39m 
+[36mexport[39m 
+[36masync[39m 
+[36mfunction[39m createPro
+duct(product[33m:[39m [33
+mOmit[39m[33m<[39m[33mPr
+oduct[39m[33m,[39m 
+[32m"id"[39m [33m|[39m 
+[32m"created_at"[39m 
+[33m|[39m [32m"category"
+[39m[33m>[39m)[33m:[39m 
+[33mPromise[39m[33m<[39m
+[33mProduct[39m 
+[33m|[39m 
+[36mnull[39m[33m>[39m {
+[31m[1m>[22m[39m[90m 
+49 |[39m   [36mconst[39m 
+{ data[33m,[39m error } 
+[33m=[39m [36mawait[39m 
+supabaseAdmin()([32m"produc
+ts"[39m)
+ [90m    |[39m            
+                     
+[31m[1m^[22m[39m
+ [90m 50 |[39m     
+[33m.[39minsert(product)
+ [90m 51 |[39m     
+[33m.[39mselect()
+ [90m 52 |[39m     [33m.
+[39msingle()[33m;[39m[0m
+Next.js build worker exited 
+with code: 1 and signal: 
+null

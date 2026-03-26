@@ -2,10 +2,21 @@
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { createOrder, AddressInput } from "@/lib/supabase-queries";
 import { CheckCircle } from "lucide-react";
+
+const PERTH_SUBURBS = [
+  "Cottesloe", "Fremantle", "Subiaco", "Scarborough", "Joondalup", 
+  "Rockingham", "Midland", "Armadale", "Canning Vale", "Morley", 
+  "Nedlands", "Peppermint Grove", "South Perth", "Victoria Park", 
+  "Belmont", "Osborne Park", "Balcatta", "Duncraig", "Hillarys",
+  "Applecross", "Burswood", "Claremont", "Doubleview", "Floreat",
+  "Guildford", "Innaloo", "Kalamunda", "Leederville", "Maylands",
+  "Mount Lawley", "Northbridge", "Rivervale", "Wembley"
+].sort();
 
 export default function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
@@ -33,6 +44,7 @@ export default function CheckoutPage() {
 
     const address: AddressInput = {
       full_name: `${form.firstName} ${form.lastName}`,
+      email: form.email,
       address: form.address,
       suburb: form.suburb,
       state: location === "perth" ? "WA" : "Other",
@@ -61,7 +73,6 @@ export default function CheckoutPage() {
       // Guest order flow
       setTimeout(() => {
         clearCart();
-        // Since guest doesn't have an order saved in DB for this mockup demo, use a fake ID
         router.push(`/checkout/success?guest=true&total=${total}&fee=${shippingFee}`);
       }, 800);
     }
@@ -111,7 +122,7 @@ export default function CheckoutPage() {
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Address</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Address (For Invoice)</label>
                   <input required type="email" name="email" value={form.email} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
@@ -138,6 +149,16 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
+              {location === "perth" && (
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-gray-200 mb-4 ring-2 ring-black/5">
+                  <iframe 
+                    width="100%" height="100%" frameBorder="0" style={{ border: 0 }}
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d216597.5855018679!2d115.700305!3d-31.954625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2a32966cdccfd739%3A0xc3fec3f309a96e94!2sPerth%20WA%2C%20Australia!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+                    allowFullScreen
+                  />
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Street Address</label>
@@ -146,8 +167,16 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Suburb</label>
-                  <input required type="text" name="suburb" value={form.suburb} onChange={handleChange}
-                    className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
+                  {location === "perth" ? (
+                    <select required name="suburb" value={form.suburb} onChange={handleChange}
+                      className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black bg-white">
+                      <option value="">Select Perth Suburb</option>
+                      {PERTH_SUBURBS.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  ) : (
+                    <input required type="text" name="suburb" value={form.suburb} onChange={handleChange}
+                      className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Postcode</label>

@@ -27,11 +27,17 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getAdminStats(), getAllOrders()]).then(([s, o]) => {
-      setStats(s);
-      setOrders(o.slice(0, 5));
-      setLoading(false);
-    });
+    setLoading(true);
+    Promise.all([getAdminStats(), getAllOrders()])
+      .then(([s, o]) => {
+        if (s) setStats(s);
+        if (o) setOrders(o.slice(0, 5));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Dashboard Load Error:", err);
+        setLoading(false);
+      });
   }, []);
 
   const statCards = stats ? [

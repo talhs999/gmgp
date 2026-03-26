@@ -1,6 +1,7 @@
 "use server";
 import { supabase, supabaseAdmin } from "./supabase";
 import { Product, Category, Order, Profile } from "./types";
+import { sendOrderConfirmationEmail, sendOrderCancellationEmail } from "./email-service";
 
 // ─── PRODUCTS ────────────────────────────────────────────────
 
@@ -46,7 +47,7 @@ export async function getRelatedProducts(categoryId: string, excludeId: string):
 }
 
 export async function createProduct(product: Omit<Product, "id" | "created_at" | "category">): Promise<Product | null> {
-  const { data, error } = await supabaseAdmin()("products")
+  const { data, error } = await supabaseAdmin().from("products")
     .insert(product)
     .select()
     .single();
@@ -55,7 +56,7 @@ export async function createProduct(product: Omit<Product, "id" | "created_at" |
 }
 
 export async function updateProduct(id: string, product: Partial<Product>): Promise<boolean> {
-  const { error } = await supabaseAdmin()("products")
+  const { error } = await supabaseAdmin().from("products")
     .update(product)
     .eq("id", id);
   if (error) { console.error("updateProduct:", error); return false; }
@@ -63,7 +64,7 @@ export async function updateProduct(id: string, product: Partial<Product>): Prom
 }
 
 export async function deleteProduct(id: string): Promise<boolean> {
-  const { error } = await supabaseAdmin()("products")
+  const { error } = await supabaseAdmin().from("products")
     .delete()
     .eq("id", id);
   if (error) { console.error("deleteProduct:", error); return false; }
@@ -73,7 +74,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
 // ─── CATEGORIES ──────────────────────────────────────────────
 
 export async function getCategories(): Promise<Category[]> {
-  const { data, error } = await supabaseAdmin()("categories")
+  const { data, error } = await supabaseAdmin().from("categories")
     .select("*")
     .order("sort_order", { ascending: true });
   if (error) { console.error("getCategories:", error); return []; }
@@ -81,7 +82,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function createCategory(category: Omit<Category, "id">): Promise<Category | null> {
-  const { data, error } = await supabaseAdmin()("categories")
+  const { data, error } = await supabaseAdmin().from("categories")
     .insert(category)
     .select()
     .single();
@@ -90,7 +91,7 @@ export async function createCategory(category: Omit<Category, "id">): Promise<Ca
 }
 
 export async function deleteCategory(id: string): Promise<boolean> {
-  const { error } = await supabaseAdmin()("categories").delete().eq("id", id);
+  const { error } = await supabaseAdmin().from("categories").delete().eq("id", id);
   if (error) { console.error("deleteCategory:", error); return false; }
   return true;
 }
@@ -106,6 +107,7 @@ export interface OrderItemInput {
 
 export interface AddressInput {
   full_name: string;
+  email?: string;
   address: string;
   suburb: string;
   state: string;
@@ -119,7 +121,7 @@ export async function createOrder(
   items: OrderItemInput[],
   address: AddressInput
 ): Promise<Order | null> {
-  const { data: order, error: orderError } = await supabaseAdmin()("orders")
+  const { data: order, error: orderError } = await supabaseAdmin().from("orders")
     .insert({
       user_id: userId,
       total,
@@ -139,17 +141,20 @@ export async function createOrder(
     order_id: order.id,
   }));
 
-  const { error: itemsError } = await supabaseAdmin()("order_items").insert(orderItems);
+  const { error: itemsError } = await supabaseAdmin().from("order_items").insert(orderItems);
   if (itemsError) {
     console.error("createOrderItems:", itemsError);
     return null;
   }
 
+  // Send Confirmation Email
+  await sendOrderConfirmationEmail(order.id, address.email || "guest@example.com", total);
+
   return order as Order;
 }
 
 export async function getUserOrders(userId: string): Promise<Order[]> {
-  const { data, error } = await supabaseAdmin()("orders")
+  const { data, error } = await supabaseAdmin().from("orders")
     .select("*, order_items(*, product:products(name, image_url, slug))")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
@@ -168,15 +173,37 @@ export async function getAllOrders(): Promise<(Order & { profile?: { full_name: 
 }
 
 export async function updateOrderStatus(id: string, status: Order["status"]): Promise<boolean> {
-  const { error } = await supabaseAdmin()("orders").update({ status }).eq("id", id);
-  if (error) { console.error("updateOrderStatus:", error); return false; }
-  return true;
+  try {
+    const { data: order } = await supabaseAdmin()
+      .from("orders")
+      .select("*, profile:profiles(email), address_snapshot")
+      .eq("id", id)
+      .single();
+
+    const { error } = await supabaseAdmin().from("orders").update({ status }).eq("id", id);
+    if (error) {
+      console.error("updateOrderStatus Error:", error);
+      return false;
+    }
+
+    if (status === "cancelled") {
+      const email = order?.profile?.email || order?.address_snapshot?.email;
+      if (email) {
+        await sendOrderCancellationEmail(id, email);
+      }
+    }
+    
+    return true;
+  } catch (err) {
+    console.error("updateOrderStatus Catch:", err);
+    return false;
+  }
 }
 
 // ─── PROFILES ────────────────────────────────────────────────
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  const { data, error } = await supabaseAdmin()("profiles")
+  const { data, error } = await supabaseAdmin().from("profiles")
     .select("*")
     .eq("id", userId)
     .maybeSingle();
@@ -185,7 +212,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function updateProfile(userId: string, profile: Partial<Profile>): Promise<boolean> {
-  const { error } = await supabaseAdmin()("profiles")
+  const { error } = await supabaseAdmin().from("profiles")
     .update(profile)
     .eq("id", userId);
   if (error) { console.error("updateProfile:", error); return false; }
@@ -227,4 +254,35 @@ export async function getAdminStats() {
     todayOrderCount: todayOrders.length,
     todayRevenue: todayOrders.reduce((sum: number, o: { total: number }) => sum + Number(o.total), 0),
   };
+}
+
+export async function cancelOrder(orderId: string): Promise<boolean> {
+  try {
+    const { data: order } = await supabaseAdmin()
+      .from("orders")
+      .select("*, profile:profiles(email), address_snapshot")
+      .eq("id", orderId)
+      .single();
+
+    const { error } = await supabaseAdmin()
+      .from("orders")
+      .update({ status: "cancelled" })
+      .eq("id", orderId);
+      
+    if (error) {
+      console.error("cancelOrder Error:", error);
+      return false;
+    }
+    
+    // Trigger cancellation email
+    const email = order?.profile?.email || order?.address_snapshot?.email;
+    if (email) {
+      await sendOrderCancellationEmail(orderId, email);
+    }
+    
+    return true;
+  } catch (err) {
+    console.error("cancelOrder Catch:", err);
+    return false;
+  }
 }
