@@ -89,8 +89,8 @@ export default function HomePage() {
             ].map((ytId, i) => (
               <div key={i} className="aspect-[9/16] relative rounded-xl overflow-hidden bg-black shadow-md group">
                 <iframe
-                  className="absolute inset-0 w-full h-full object-cover scale-[1.5] pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity"
-                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0`}
+                  className="absolute inset-0 w-full h-full object-cover scale-[1.3] pointer-events-none opacity-90 group-hover:opacity-100 transition-opacity"
+                  src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&disablekb=1&fs=0&bg=000000&color=white`}
                   allow="autoplay; encrypted-media"
                   frameBorder="0"
                 />
