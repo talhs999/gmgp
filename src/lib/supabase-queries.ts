@@ -1,10 +1,11 @@
+"use server";
 import { supabase, supabaseAdmin } from "./supabase";
 import { Product, Category, Order, Profile } from "./types";
 
 // ─── PRODUCTS ────────────────────────────────────────────────
 
 export async function getProducts(): Promise<Product[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
     .order("created_at", { ascending: false });
@@ -13,7 +14,7 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
     .or("is_featured.eq.true,is_best_seller.eq.true")
@@ -24,7 +25,7 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
     .eq("slug", slug)
@@ -34,7 +35,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getRelatedProducts(categoryId: string, excludeId: string): Promise<Product[]> {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
     .eq("category_id", categoryId)
@@ -45,8 +46,7 @@ export async function getRelatedProducts(categoryId: string, excludeId: string):
 }
 
 export async function createProduct(product: Omit<Product, "id" | "created_at" | "category">): Promise<Product | null> {
-  const { data, error } = await supabase
-    .from("products")
+  const { data, error } = await supabaseAdmin()("products")
     .insert(product)
     .select()
     .single();
@@ -55,8 +55,7 @@ export async function createProduct(product: Omit<Product, "id" | "created_at" |
 }
 
 export async function updateProduct(id: string, product: Partial<Product>): Promise<boolean> {
-  const { error } = await supabase
-    .from("products")
+  const { error } = await supabaseAdmin()("products")
     .update(product)
     .eq("id", id);
   if (error) { console.error("updateProduct:", error); return false; }
@@ -64,8 +63,7 @@ export async function updateProduct(id: string, product: Partial<Product>): Prom
 }
 
 export async function deleteProduct(id: string): Promise<boolean> {
-  const { error } = await supabase
-    .from("products")
+  const { error } = await supabaseAdmin()("products")
     .delete()
     .eq("id", id);
   if (error) { console.error("deleteProduct:", error); return false; }
@@ -75,8 +73,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
 // ─── CATEGORIES ──────────────────────────────────────────────
 
 export async function getCategories(): Promise<Category[]> {
-  const { data, error } = await supabase
-    .from("categories")
+  const { data, error } = await supabaseAdmin()("categories")
     .select("*")
     .order("sort_order", { ascending: true });
   if (error) { console.error("getCategories:", error); return []; }
@@ -84,8 +81,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function createCategory(category: Omit<Category, "id">): Promise<Category | null> {
-  const { data, error } = await supabase
-    .from("categories")
+  const { data, error } = await supabaseAdmin()("categories")
     .insert(category)
     .select()
     .single();
@@ -94,7 +90,7 @@ export async function createCategory(category: Omit<Category, "id">): Promise<Ca
 }
 
 export async function deleteCategory(id: string): Promise<boolean> {
-  const { error } = await supabase.from("categories").delete().eq("id", id);
+  const { error } = await supabaseAdmin()("categories").delete().eq("id", id);
   if (error) { console.error("deleteCategory:", error); return false; }
   return true;
 }
@@ -123,8 +119,7 @@ export async function createOrder(
   items: OrderItemInput[],
   address: AddressInput
 ): Promise<Order | null> {
-  const { data: order, error: orderError } = await supabase
-    .from("orders")
+  const { data: order, error: orderError } = await supabaseAdmin()("orders")
     .insert({
       user_id: userId,
       total,
@@ -144,7 +139,7 @@ export async function createOrder(
     order_id: order.id,
   }));
 
-  const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
+  const { error: itemsError } = await supabaseAdmin()("order_items").insert(orderItems);
   if (itemsError) {
     console.error("createOrderItems:", itemsError);
     return null;
@@ -154,8 +149,7 @@ export async function createOrder(
 }
 
 export async function getUserOrders(userId: string): Promise<Order[]> {
-  const { data, error } = await supabase
-    .from("orders")
+  const { data, error } = await supabaseAdmin()("orders")
     .select("*, order_items(*, product:products(name, image_url, slug))")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
@@ -174,7 +168,7 @@ export async function getAllOrders(): Promise<(Order & { profile?: { full_name: 
 }
 
 export async function updateOrderStatus(id: string, status: Order["status"]): Promise<boolean> {
-  const { error } = await supabase.from("orders").update({ status }).eq("id", id);
+  const { error } = await supabaseAdmin()("orders").update({ status }).eq("id", id);
   if (error) { console.error("updateOrderStatus:", error); return false; }
   return true;
 }
@@ -182,8 +176,7 @@ export async function updateOrderStatus(id: string, status: Order["status"]): Pr
 // ─── PROFILES ────────────────────────────────────────────────
 
 export async function getProfile(userId: string): Promise<Profile | null> {
-  const { data, error } = await supabase
-    .from("profiles")
+  const { data, error } = await supabaseAdmin()("profiles")
     .select("*")
     .eq("id", userId)
     .maybeSingle();
@@ -192,8 +185,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
 }
 
 export async function updateProfile(userId: string, profile: Partial<Profile>): Promise<boolean> {
-  const { error } = await supabase
-    .from("profiles")
+  const { error } = await supabaseAdmin()("profiles")
     .update(profile)
     .eq("id", userId);
   if (error) { console.error("updateProfile:", error); return false; }
