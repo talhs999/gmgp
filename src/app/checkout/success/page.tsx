@@ -24,14 +24,14 @@ function SuccessContent() {
       <p className="text-gray-500 mb-8 text-lg">Thank you for your purchase. Your premium meat is being prepared.</p>
 
       {/* Invoice Card */}
-      <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 text-left mb-10">
+      <div id="invoice-card" className="bg-gray-50 p-6 rounded-xl border border-gray-200 text-left mb-10 print:m-0 print:p-0 print:border-none print:bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
           <div>
             <h2 className="font-bold text-gray-900 uppercase tracking-widest text-sm mb-1">Invoice Summary</h2>
-            <p className="text-xs text-gray-500">Order #{orderId ? orderId.split("-")[0].toUpperCase() : Math.floor(Math.random() * 1000000)}</p>
+            <p className="text-xs text-gray-500">Order #{orderId ? orderId.split("-")[0].toUpperCase() : "TEMP-" + Math.floor(Math.random() * 1000000)}</p>
           </div>
           <div className="text-right">
-            <span className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full uppercase tracking-wider">
+            <span className="inline-block px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full uppercase tracking-wider print:hidden">
               Cash on Delivery
             </span>
           </div>
@@ -40,44 +40,44 @@ function SuccessContent() {
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Status:</span>
-            <span className="font-bold text-gray-900">Processing</span>
+            <span className="font-bold text-gray-900">Processing / Ready to Pay</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Payment Method:</span>
             <span className="font-bold text-gray-900">COD (Pay on Arrival)</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Total Amount Due:</span>
-            <span className="font-black text-lg text-accent">AUD ${orderId ? "---" : parseFloat(total).toFixed(2)}</span>
+          <div className="flex justify-between pt-2 border-t mt-2">
+            <span className="text-gray-600 font-bold">Total Amount Due:</span>
+            <span className="font-black text-xl text-accent">AUD ${!orderId ? parseFloat(total).toFixed(2) : "--"}</span>
           </div>
-          {orderId && (
-            <div className="text-xs text-blue-600 bg-blue-50 p-3 rounded mt-2">
-              The exact total has been calculated and saved to your account. You can view the full itemized invoice in your dashboard.
-            </div>
-          )}
-          {isGuest && (
-            <div className="flex justify-between text-xs text-gray-500 pt-2 border-t">
-              <span>Includes Shipping:</span>
-              <span>AUD ${parseFloat(fee).toFixed(2)}</span>
-            </div>
-          )}
+          
+          <div className="hidden print:block mt-8 pt-8 border-t border-dashed">
+            <h3 className="font-bold uppercase mb-2">Delivery Instructions:</h3>
+            <p className="text-xs text-gray-600">Please have the exact amount ready in cash at the time of delivery. A delivery partner will contact you shortly.</p>
+          </div>
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        {orderId ? (
-          <Link href="/account" className="btn-outline flex items-center justify-center gap-2 py-4">
-            <FileText size={18} /> View Full Invoice
-          </Link>
-        ) : (
-          <button onClick={() => window.print()} className="btn-outline flex items-center justify-center gap-2 py-4">
-            <Download size={18} /> Save Receipt
-          </button>
-        )}
-        <Link href="/shop" className="btn-primary flex items-center justify-center gap-2 py-4">
+      <div className="grid sm:grid-cols-2 gap-4 print:hidden">
+        <button 
+          onClick={() => window.print()}
+          className="btn-outline flex items-center justify-center gap-2 py-4 hover:bg-black hover:text-white transition-all transform hover:scale-[1.02]"
+        >
+          <Download size={18} /> Download PDF Invoice
+        </button>
+        <Link href="/shop" className="btn-primary flex items-center justify-center gap-2 py-4 transform hover:scale-[1.02]">
           <ArrowLeft size={18} /> Continue Shopping
         </Link>
       </div>
+
+      <style jsx global>{`
+        @media print {
+          nav, footer, .btn-primary, .btn-outline, .print\\:hidden { display: none !important; }
+          body { background: white !important; padding: 0 !important; margin: 0 !important; }
+          .pt-32 { padding-top: 20px !important; }
+          #invoice-card { width: 100% !important; max-width: 100% !important; box-shadow: none !important; margin: 0 !important; }
+        }
+      `}</style>
     </div>
   );
 }
