@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 /* ------------------------------------------------------------------ */
 /*  Slide data — meat cutting & meat-only photography                  */
@@ -134,13 +135,16 @@ export default function MainSlider() {
 
         {/* ---- Peek: Previous slide (left) ---- */}
         <div
-          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden"
+          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden group"
           onClick={prev}
           aria-label="Previous slide"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-700 hover:scale-110"
-            style={{ backgroundImage: `url('${slides[prevIdx].image}')` }}
+          <Image
+            src={slides[prevIdx].image}
+            alt="Previous slide peek"
+            fill
+            className="object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
+            sizes="10vw"
           />
           {/* blur + darken for unfocused peek */}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
@@ -165,9 +169,13 @@ export default function MainSlider() {
               className="absolute inset-0"
             >
               {/* Background meat image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${slides[current].image}')` }}
+              <Image
+                src={slides[current].image}
+                alt={slides[current].heading}
+                fill
+                priority
+                className="object-cover"
+                sizes="100vw"
               />
               {/* Left-sided gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
@@ -247,13 +255,16 @@ export default function MainSlider() {
 
         {/* ---- Peek: Next slide (right) ---- */}
         <div
-          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden"
+          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden group"
           onClick={next}
           aria-label="Next slide"
         >
-          <div
-            className="absolute inset-0 bg-cover bg-center scale-105 transition-transform duration-700 hover:scale-110"
-            style={{ backgroundImage: `url('${slides[nextIdx].image}')` }}
+          <Image
+            src={slides[nextIdx].image}
+            alt="Next slide peek"
+            fill
+            className="object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
+            sizes="10vw"
           />
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
           <div className="absolute inset-0 flex items-center justify-center">

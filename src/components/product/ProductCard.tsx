@@ -88,12 +88,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Hover Overlay */}
         <div className="product-card-overlay gap-2">
-          <button className="bg-white text-black p-3 rounded-full hover:bg-accent hover:text-white transition-colors shadow-lg">
+          <button aria-label={`Quick view ${product.name}`} className="bg-white text-black p-3 rounded-full hover:bg-accent hover:text-white transition-colors shadow-lg">
             <Eye size={18} />
           </button>
           <button
             onClick={handleAddToCart}
             disabled={!product.in_stock}
+            aria-label={`Add ${product.name} to cart`}
             className="bg-accent text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent-dark transition-colors disabled:bg-gray-400 shadow-lg flex items-center gap-2"
           >
             <ShoppingCart size={14} />

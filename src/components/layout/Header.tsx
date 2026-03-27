@@ -102,18 +102,21 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 className={`hover:text-accent transition-colors ${isSolid ? "text-black" : "text-white"}`}
+                aria-label="Search"
               >
                 <Search size={20} />
               </button>
               <Link
                 href="/account"
                 className={`hover:text-accent transition-colors ${isSolid ? "text-black" : "text-white"}`}
+                aria-label="Account"
               >
                 <User size={20} />
               </Link>
               <button
                 onClick={openDrawer}
                 className={`relative hover:text-accent transition-colors ${isSolid ? "text-black" : "text-white"}`}
+                aria-label="Cart"
               >
                 <ShoppingCart size={20} />
                 {itemCount > 0 && (
@@ -126,7 +129,7 @@ export default function Header() {
 
             {/* Mobile Right */}
             <div className="flex lg:hidden items-center gap-4">
-              <button onClick={openDrawer} className={`relative ${isSolid ? "text-black" : "text-white"}`}>
+              <button onClick={openDrawer} className={`relative ${isSolid ? "text-black" : "text-white"}`} aria-label="Cart">
                 <ShoppingCart size={20} />
                 {itemCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
@@ -137,6 +140,7 @@ export default function Header() {
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className={isSolid ? "text-black" : "text-white"}
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
               >
                 {mobileOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
