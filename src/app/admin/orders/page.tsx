@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getAllOrders, updateOrderStatus } from "@/lib/supabase-queries";
+import { getAllOrders, updateOrderStatus, deleteOrder } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
-import { ShoppingBag, ChevronDown } from "lucide-react";
+import { ShoppingBag, ChevronDown, Trash2 } from "lucide-react";
 
 const STATUS_OPTIONS: Order["status"][] = ["pending", "confirmed", "preparing", "delivered", "cancelled"];
 
@@ -28,6 +28,18 @@ export default function AdminOrdersPage() {
     const ok = await updateOrderStatus(orderId, status);
     if (ok) {
       setOrders((prev) => prev.map((o) => o.id === orderId ? { ...o, status } : o));
+    }
+    setUpdating(null);
+  };
+
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!confirm("Are you sure you want to permanently delete this order? This cannot be undone.")) return;
+    setUpdating(orderId);
+    const ok = await deleteOrder(orderId);
+    if (ok) {
+      setOrders((prev) => prev.filter((o) => o.id !== orderId));
+    } else {
+      alert("Failed to delete order. It may be locked.");
     }
     setUpdating(null);
   };
@@ -74,8 +86,12 @@ export default function AdminOrdersPage() {
                       <span className="truncate max-w-[150px]">
                         {order.profile?.full_name || order.address_snapshot?.full_name || "Unknown"}
                       </span>
-                      {!order.user_id && (
-                        <span className="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-sm uppercase tracking-widest font-bold whitespace-nowrap">
+                      {order.user_id ? (
+                        <span className="text-[9px] bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-sm uppercase tracking-widest font-bold whitespace-nowrap">
+                          Member
+                        </span>
+                      ) : (
+                        <span className="text-[9px] bg-gray-100 text-gray-500 border border-gray-200 px-2 py-0.5 rounded-sm uppercase tracking-widest font-bold whitespace-nowrap">
                           Guest
                         </span>
                       )}
@@ -113,7 +129,17 @@ export default function AdminOrdersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm font-bold text-right">
-                    ${Number(order.total).toFixed(2)}
+                    <div className="flex items-center justify-end gap-4">
+                      <span>${Number(order.total).toFixed(2)}</span>
+                      <button
+                        onClick={() => handleDeleteOrder(order.id)}
+                        disabled={updating === order.id}
+                        className="text-gray-300 hover:text-red-600 transition-colors disabled:opacity-50"
+                        title="Delete Order"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

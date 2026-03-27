@@ -305,12 +305,12 @@ export async function cancelOrder(orderId: string, reason?: string): Promise<boo
       }
     }
     
-    // Trigger cancellation email
+    // Attempt email
     const email = order?.profile?.email || order?.address_snapshot?.email;
     if (email) {
       await sendOrderCancellationEmail(orderId, email);
     }
-    
+
     return true;
   } catch (err) {
     console.error("cancelOrder Catch:", err);
@@ -320,12 +320,6 @@ export async function cancelOrder(orderId: string, reason?: string): Promise<boo
 
 export async function deleteOrder(orderId: string): Promise<boolean> {
   try {
-    // First delete order items (foreign key constraint)
-    await supabaseAdmin()
-      .from("order_items")
-      .delete()
-      .eq("order_id", orderId);
-
     // Then delete the order
     const { error } = await supabaseAdmin()
       .from("orders")
