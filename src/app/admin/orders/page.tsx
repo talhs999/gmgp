@@ -70,10 +70,24 @@ export default function AdminOrdersPage() {
                     #{order.id.slice(0, 8).toUpperCase()}
                   </td>
                   <td className="px-6 py-4 text-sm font-semibold">
-                    {order.profile?.full_name || "Guest"}
+                    <div className="flex items-center gap-2">
+                      <span className="truncate max-w-[150px]">
+                        {order.profile?.full_name || order.address_snapshot?.full_name || "Unknown"}
+                      </span>
+                      {!order.user_id && (
+                        <span className="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-sm uppercase tracking-widest font-bold whitespace-nowrap">
+                          Guest
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(order.created_at).toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" })}
+                    <div className="text-gray-900 font-medium">
+                      {new Date(order.created_at).toLocaleDateString("en-AU", { day: "2-digit", month: "short", year: "numeric" })}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-0.5">
+                      {new Date(order.created_at).toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit" })}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {(order.order_items as unknown as unknown[])?.length ?? "—"} items
