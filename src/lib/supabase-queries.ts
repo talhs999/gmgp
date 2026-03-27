@@ -367,3 +367,20 @@ export async function saveOrderRating(
     return false;
   }
 }
+
+export async function sendProductFeedback(
+  productName: string,
+  name: string,
+  email: string,
+  message: string
+): Promise<boolean> {
+  try {
+    console.log(`[FEEDBACK ALERT] New question about ${productName} from ${name} (${email}):`);
+    console.log(`[FEEDBACK MESSAGE]: ${message}`);
+    // In a real scenario, we'd trigger the email service or insert into a "feedback" table.
+    return true;
+  } catch (error) {
+    console.error("sendProductFeedback Error:", error);
+    return false;
+  }
+}

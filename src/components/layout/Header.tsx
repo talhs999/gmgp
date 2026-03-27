@@ -167,11 +167,22 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <div className="flex items-center gap-6 px-6 py-4">
-              <button onClick={() => { setSearchOpen(true); setMobileOpen(false); }}>
-                <Search size={20} />
+            <div className="flex items-center gap-8 px-6 py-6 border-b border-gray-100">
+              <button 
+                onClick={() => { setSearchOpen(true); setMobileOpen(false); }}
+                className="p-2 -ml-2 text-black hover:text-accent transition-colors"
+                aria-label="Search"
+              >
+                <Search size={24} />
               </button>
-              <Link href="/account"><User size={20} /></Link>
+              <Link 
+                href="/account"
+                onClick={() => setMobileOpen(false)}
+                className="p-2 text-black hover:text-accent transition-colors"
+                aria-label="Account"
+              >
+                <User size={24} />
+              </Link>
             </div>
           </div>
         )}

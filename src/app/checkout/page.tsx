@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { createOrder, AddressInput } from "@/lib/supabase-queries";
 import { CheckCircle } from "lucide-react";
+import { useCsrfToken } from "@/lib/csrf";
 
 const PERTH_SUBURBS = [
   "Cottesloe", "Fremantle", "Subiaco", "Scarborough", "Joondalup", 
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
   const { user } = useAuth();
   const router = useRouter();
+  const csrfToken = useCsrfToken();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   
@@ -108,6 +110,9 @@ export default function CheckoutPage() {
         <div className="grid lg:grid-cols-12 gap-10">
           <div className="lg:col-span-7 space-y-8">
             <form id="checkout-form" onSubmit={handleCheckout} className="bg-white p-8 border border-gray-100 shadow-sm rounded-xl space-y-6">
+              
+              {/* CSRF hidden token */}
+              <input type="hidden" name="_csrf" value={csrfToken} readOnly />
               
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4">Contact Information</h2>
               <div className="grid grid-cols-2 gap-4">

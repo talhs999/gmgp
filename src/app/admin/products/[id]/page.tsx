@@ -30,6 +30,7 @@ export default function EditProductPage({ params }: Props) {
     inStock: true,
     badge: "",
     imageUrl: "",
+    galleryImages: "",
     leanness: 5,
     firmness: 5,
     richness: 5,
@@ -58,6 +59,7 @@ export default function EditProductPage({ params }: Props) {
             inStock: found.in_stock,
             badge: found.badge || "",
             imageUrl: found.image_url || "",
+            galleryImages: found.images ? found.images.join(", ") : "",
             leanness: found.leanness_rating || 5,
             firmness: found.firmness_rating || 5,
             richness: found.richness_rating || 5,
@@ -94,6 +96,7 @@ export default function EditProductPage({ params }: Props) {
       in_stock: form.inStock,
       badge: form.badge || null,
       image_url: form.imageUrl,
+      images: form.galleryImages.split(",").map(u => u.trim()).filter(Boolean),
       leanness_rating: Number(form.leanness),
       firmness_rating: Number(form.firmness),
       richness_rating: Number(form.richness),
@@ -203,6 +206,11 @@ export default function EditProductPage({ params }: Props) {
                 <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
               </div>
             )}
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest mb-2 text-gray-500">Gallery Images (Comma-separated URLs)</label>
+            <textarea name="galleryImages" rows={3} value={form.galleryImages} onChange={handleChange} className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-black rounded-lg resize-y" placeholder="https://image1.jpg, https://image2.jpg" />
           </div>
         </div>
 

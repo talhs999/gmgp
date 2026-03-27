@@ -71,7 +71,10 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   transition: background 0.2s;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   text-align: center;
 }
 .btn-primary:hover { background: #E31B23; }
@@ -85,7 +88,10 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   transition: background 0.2s;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   text-align: center;
 }
 .btn-accent:hover { background: #c01019; }

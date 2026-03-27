@@ -5,6 +5,11 @@ import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { getProductBySlug, getRelatedProducts } from "@/lib/supabase-queries";
 import { useCartStore } from "@/store/cartStore";
 import ProductCard from "@/components/product/ProductCard";
+import ProductGallery from "@/components/product/ProductGallery";
+import Accordion from "@/components/ui/Accordion";
+import ShareButton from "@/components/product/ShareButton";
+import FeedbackModal from "@/components/product/FeedbackModal";
+import BeforeAfterSlider from "@/components/product/BeforeAfterSlider";
 import { notFound } from "next/navigation";
 import { WeightOption, Product } from "@/lib/types";
 
@@ -67,35 +72,30 @@ export default function ProductDetailPage({ params }: Props) {
 
   return (
     <>
-      <div className="pt-16">
+      <div className="pt-24 bg-gray-50 border-b border-gray-100 mb-8">
         {/* Breadcrumb */}
         <div className="container-custom py-4">
-          <nav className="flex items-center gap-2 text-xs text-gray-400">
-            <a href="/" className="hover:text-black transition-colors">Home</a>
-            <span>/</span>
-            <a href="/shop" className="hover:text-black transition-colors">Shop</a>
-            <span>/</span>
+          <nav className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
+            <a href="/" className="hover:text-accent transition-colors">Home</a>
+            <span className="text-gray-300">/</span>
+            <a href="/shop" className="hover:text-accent transition-colors">Shop</a>
+            <span className="text-gray-300">/</span>
             <span className="text-black">{product.name}</span>
           </nav>
         </div>
+      </div>
 
+      <div>
         {/* Product Detail */}
         <div className="container-custom py-8">
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
-            {/* Image */}
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-xl">
-              <Image src={product.image_url} alt={product.name} fill className="object-cover" priority />
-              {product.badge && (
-                <div className="absolute top-4 left-4">
-                  <span className={
-                    product.badge_color === "red" ? "badge-red" :
-                    product.badge_color === "green" ? "badge-green" : "badge-grey"
-                  }>
-                    {product.badge}
-                  </span>
-                </div>
-              )}
-            </div>
+            {/* Image Gallery */}
+            <ProductGallery 
+              images={product.images && product.images.length > 0 ? product.images : [product.image_url]} 
+              productName={product.name}
+              badge={product.badge}
+              badgeColor={product.badge_color}
+            />
 
             {/* Info */}
             <div>
@@ -195,7 +195,36 @@ export default function ProductDetailPage({ params }: Props) {
                   {product.in_stock ? "Add To Cart" : "Sold Out"}
                 </button>
               </div>
+
+              {/* Share & Ask Question */}
+              <div className="flex gap-4 mt-8">
+                <ShareButton title={product.name} url={typeof window !== "undefined" ? window.location.href : ""} />
+                <FeedbackModal productName={product.name} />
+              </div>
+
+              {/* Expandable Info */}
+              <div className="mt-8 border-t border-gray-200">
+                <Accordion title="Delivery Information" defaultOpen>
+                  <p>We deliver priority overnight to ensure your meat arrives fresh. Delivery is $100 AUD for Perth and $200 AUD for all other regions. Orders placed before 2 PM are dispatched the same day.</p>
+                </Accordion>
+                <Accordion title="Storage & Preparation">
+                  <p>Store your fresh cuts in the coldest part of your refrigerator at 0-4°C. Vacuum-sealed products can be refrigerated for up to 14 days or frozen for up to 6 months. For best cooking results, let the meat come to room temperature for 30 minutes prior to cooking.</p>
+                </Accordion>
+                <Accordion title="Our Guarantee">
+                  <p>Every cut is backed by our Desert Premium Guarantee. If you are not completely satisfied with the tenderness and flavor, let us know within 24 hours of delivery and we will make it right.</p>
+                </Accordion>
+              </div>
             </div>
+          </div>
+
+          {/* Before/After Presentation */}
+          <div className="max-w-4xl mx-auto my-20 text-center">
+            <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-4 text-center">Vacuum-Skin Packaging: See the Difference</h2>
+            <p className="text-gray-500 mb-8 max-w-2xl mx-auto">Our advanced vacuum-skin packaging locks in freshness, flavor, and quality for up to 14 days. Drag the slider to compare standard packaging versus the GMGP difference.</p>
+            <BeforeAfterSlider 
+              beforeImage="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=800&q=80" 
+              afterImage={product.image_url} 
+            />
           </div>
 
           {/* Related Products */}
