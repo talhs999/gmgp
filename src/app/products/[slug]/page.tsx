@@ -91,7 +91,11 @@ export default function ProductDetailPage({ params }: Props) {
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
             {/* Image Gallery */}
             <ProductGallery 
-              images={product.images && product.images.length > 0 ? product.images : [product.image_url]} 
+              images={
+                Array.isArray(product.images) && product.images.filter((img: string) => img && img.trim() !== '').length > 0 
+                  ? product.images.filter((img: string) => img && img.trim() !== '') 
+                  : (product.image_url ? [product.image_url] : [])
+              } 
               productName={product.name}
               badge={product.badge}
               badgeColor={product.badge_color}
