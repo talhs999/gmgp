@@ -4,6 +4,7 @@ import CountdownTimer from "@/components/home/CountdownTimer";
 import Marquee from "@/components/home/Marquee";
 import ProductTabs from "@/components/home/ProductTabs";
 import TrustSignals from "@/components/home/TrustSignals";
+import BeforeAfterSlider from "@/components/product/BeforeAfterSlider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -79,7 +80,23 @@ export default function HomePage() {
       {/* 8. Premium Promotional Slider */}
       <MainSlider />
 
-      {/* 8. Video Section */}
+      {/* 9. Packaging Comparison Slider */}
+      <section className="py-20 bg-gray-50">
+        <div className="container-custom">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-4 text-center">Vacuum-Skin Packaging: <span className="text-accent">See the Difference</span></h2>
+            <p className="text-gray-500 mb-10 max-w-2xl mx-auto">
+              Our advanced vacuum-skin packaging locks in freshness, flavor, and quality for up to 14 days. Drag the slider to compare standard packaging versus the GMGP difference.
+            </p>
+            <BeforeAfterSlider 
+              beforeImage="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=800&q=80" 
+              afterImage="https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=800&q=80" 
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* 10. Video Section */}
       <section className="py-16">
         <div className="container-custom">
           <h2 className="section-title text-center mb-3">Sydney's Foodies Fire Up 🔥</h2>
