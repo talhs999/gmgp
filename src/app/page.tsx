@@ -89,8 +89,8 @@ export default function HomePage() {
               Our advanced vacuum-skin packaging locks in freshness, flavor, and quality for up to 14 days. Drag the slider to compare standard packaging versus the GMGP difference.
             </p>
             <BeforeAfterSlider 
-              beforeImage="https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=800&q=80" 
-              afterImage="https://images.unsplash.com/photo-1603048297172-c92544798d5e?w=800&q=80" 
+              beforeImage="/images/home-slider-before.png" 
+              afterImage="/images/home-slider-after.png" 
             />
           </div>
         </div>
