@@ -91,11 +91,12 @@ export default function ProductDetailPage({ params }: Props) {
           <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
             {/* Image Gallery */}
             <ProductGallery 
-              images={
-                Array.isArray(product.images) && product.images.filter((img: string) => img && img.trim() !== '').length > 0 
+              images={(() => {
+                const gallery = Array.isArray(product.images) 
                   ? product.images.filter((img: string) => img && img.trim() !== '') 
-                  : (product.image_url ? [product.image_url] : [])
-              } 
+                  : [];
+                return product.image_url ? [product.image_url, ...gallery] : gallery;
+              })()}
               productName={product.name}
               badge={product.badge}
               badgeColor={product.badge_color}
