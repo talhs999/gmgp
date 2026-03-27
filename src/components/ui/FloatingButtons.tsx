@@ -303,20 +303,20 @@ export default function FloatingButtons() {
 
   return (
     <>
-      {/* Join Membership — Bottom Left */}
+      {/* Join Membership — Bottom Left (Hidden on Mobile) */}
       <Link
         href="/membership"
-        className="fixed bottom-6 left-6 z-50 bg-accent text-white text-xs font-bold uppercase tracking-widest px-4 py-3 shadow-lg hover:bg-accent-dark transition-colors"
+        className="hidden md:flex fixed bottom-6 left-6 z-50 bg-accent text-white text-xs font-bold uppercase tracking-widest px-4 py-3 shadow-lg hover:bg-accent-dark transition-colors items-center justify-center"
         style={{ writingMode: "vertical-lr", transform: "rotate(180deg)" }}
       >
         Join Membership
       </Link>
 
       {/* Right Side */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[60] flex flex-col items-end gap-3">
         {/* Chat Popup */}
         {chatOpen && (
-          <div className="w-80 sm:w-96 bg-white border border-gray-200 shadow-2xl rounded-2xl flex flex-col overflow-hidden mb-2 animate-fade-up" style={{ height: "480px" }}>
+          <div className="w-[calc(100vw-2rem)] sm:w-96 bg-white border border-gray-200 shadow-2xl rounded-2xl flex flex-col overflow-hidden mb-2 animate-fade-up max-w-[400px]" style={{ height: "480px", maxHeight: "70vh" }}>
             {/* Header */}
             <div className="bg-black text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
               <div className="flex items-center gap-2">
@@ -411,8 +411,8 @@ export default function FloatingButtons() {
         )}
       </div>
 
-      {/* Get $10 — Side Tab */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-50">
+      {/* Get $10 — Side Tab (Hidden on Mobile) */}
+      <div className="hidden md:block fixed right-0 top-1/2 -translate-y-1/2 z-50">
         <button
           className="bg-accent text-white text-[10px] font-bold uppercase tracking-widest px-2 py-4 shadow-lg hover:bg-accent-dark transition-colors"
           style={{ writingMode: "vertical-lr" }}
