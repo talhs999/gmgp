@@ -1,0 +1,22 @@
+﻿git : To https://github.
+com/talhs999/gmgp.git
+At line:1 char:113
++ ...  & weight option 
+price calculation 
+logic" 2>&1; git push 
+2>&1 | Out-F ...
++                       
+                        
+      ~~~~~~~~~~~~~
+    + CategoryInfo      
+        : NotSpecified  
+  : (To https://githu   
+ b.com/talhs999/gmgp    
+.git:String) [], Re    
+moteException
+    + FullyQualifiedErr 
+   orId : NativeComman  
+  dError
+ 
+   469d2c6..0dc980d  
+main -> main

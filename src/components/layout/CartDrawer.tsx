@@ -66,47 +66,52 @@ export default function CartDrawer() {
               </button>
             </div>
           ) : (
-            items.map((item) => (
-              <div key={item.product.id} className="flex gap-3">
-                <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                  <Image
-                    src={item.product.image_url}
-                    alt={item.product.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm leading-tight line-clamp-2">
-                    {item.product.name}
-                  </p>
-                  <p className="text-accent font-bold text-sm mt-1">
-                    A${(item.product.price * item.quantity).toFixed(2)}
-                  </p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                      className="w-6 h-6 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
-                    >
-                      <Minus size={12} />
-                    </button>
-                    <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                      className="w-6 h-6 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
-                    >
-                      <Plus size={12} />
-                    </button>
-                    <button
-                      onClick={() => removeItem(item.product.id)}
-                      className="ml-2 text-gray-400 hover:text-accent transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+            items.map((item) => {
+              const itemPrice = item.weight_option ? item.weight_option.price : item.product.price;
+              const itemKey = `${item.product.id}-${item.weight_option?.label || "default"}`;
+
+              return (
+                <div key={itemKey} className="flex gap-3">
+                  <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <Image
+                      src={item.product.image_url}
+                      alt={item.product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm leading-tight line-clamp-2">
+                      {item.product.name} {item.weight_option && <span className="text-gray-400 font-medium">— {item.weight_option.label}</span>}
+                    </p>
+                    <p className="text-accent font-bold text-sm mt-1">
+                      A${(itemPrice * item.quantity).toFixed(2)}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <button
+                        onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.weight_option?.label)}
+                        className="w-6 h-6 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.weight_option?.label)}
+                        className="w-6 h-6 border border-gray-300 flex items-center justify-center hover:border-black transition-colors"
+                      >
+                        <Plus size={12} />
+                      </button>
+                      <button
+                        onClick={() => removeItem(item.product.id, item.weight_option?.label)}
+                        className="ml-2 text-gray-400 hover:text-accent transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

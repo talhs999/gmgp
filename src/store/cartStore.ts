@@ -6,8 +6,8 @@ interface CartStore {
   items: CartItem[];
   isDrawerOpen: boolean;
   addItem: (product: Product, quantity?: number, weightOption?: WeightOption) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: string, weightLabel?: string) => void;
+  updateQuantity: (productId: string, quantity: number, weightLabel?: string) => void;
   clearCart: () => void;
   openDrawer: () => void;
   closeDrawer: () => void;
@@ -38,18 +38,24 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      removeItem: (productId) =>
+      removeItem: (productId, weightLabel) =>
         set((state) => ({
-          items: state.items.filter((i) => i.product.id !== productId),
+          items: state.items.filter(
+            (i) => !(i.product.id === productId && i.weight_option?.label === weightLabel)
+          ),
         })),
 
-      updateQuantity: (productId, quantity) =>
+      updateQuantity: (productId, quantity, weightLabel) =>
         set((state) => ({
           items:
             quantity <= 0
-              ? state.items.filter((i) => i.product.id !== productId)
+              ? state.items.filter(
+                  (i) => !(i.product.id === productId && i.weight_option?.label === weightLabel)
+                )
               : state.items.map((i) =>
-                  i.product.id === productId ? { ...i, quantity } : i
+                  i.product.id === productId && i.weight_option?.label === weightLabel
+                    ? { ...i, quantity }
+                    : i
                 ),
         })),
 
