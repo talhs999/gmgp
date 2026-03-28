@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight,
+  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight, Truck,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect } from "react";
@@ -12,6 +12,7 @@ const links = [
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/categories", label: "Categories", icon: Tag },
+  { href: "/admin/settings", label: "Shipping", icon: Truck },
   { href: "/admin/users", label: "Users", icon: Users },
 ];
 

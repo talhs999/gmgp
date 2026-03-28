@@ -3,14 +3,22 @@ import { X, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
-
-const FREE_SHIPPING_THRESHOLD = 150;
+import { getSiteSettings } from "@/lib/supabase-queries";
+import { useEffect, useState } from "react";
 
 export default function CartDrawer() {
   const { items, isDrawerOpen, closeDrawer, removeItem, updateQuantity, getTotal } = useCartStore();
+  const [threshold, setThreshold] = useState(150);
+
+  useEffect(() => {
+    getSiteSettings().then((s) => {
+      if (s) setThreshold(s.free_threshold);
+    });
+  }, []);
+
   const total = getTotal();
-  const progress = Math.min((total / FREE_SHIPPING_THRESHOLD) * 100, 100);
-  const remaining = Math.max(FREE_SHIPPING_THRESHOLD - total, 0);
+  const progress = Math.min((total / threshold) * 100, 100);
+  const remaining = Math.max(threshold - total, 0);
 
   return (
     <>

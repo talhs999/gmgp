@@ -91,3 +91,11 @@ export interface AddressSnapshot {
   postcode: string;
   phone: string;
 }
+// Site Settings Types
+export interface SiteSettings {
+  id: string;
+  perth_fee: number;
+  outside_fee: number;
+  free_threshold: number;
+  updated_at: string;
+}

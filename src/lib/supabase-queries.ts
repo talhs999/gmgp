@@ -1,6 +1,6 @@
 "use server";
 import { supabase, supabaseAdmin } from "./supabase";
-import { Product, Category, Order, Profile } from "./types";
+import { Product, Category, Order, Profile, SiteSettings } from "./types";
 import { sendOrderConfirmationEmail, sendOrderCancellationEmail } from "./email-service";
 
 // ─── PRODUCTS ────────────────────────────────────────────────
@@ -375,6 +375,46 @@ export async function sendProductFeedback(
     return true;
   } catch (error) {
     console.error("sendProductFeedback Error:", error);
+    return false;
+  }
+}
+export async function getSiteSettings(): Promise<SiteSettings | null> {
+  const { data, error } = await supabaseAdmin()
+    .from("site_settings")
+    .select("*")
+    .limit(1)
+    .single();
+    
+  if (error) {
+    if (error.code === 'PGRST116') {
+      // Create default if not exists
+      const { data: newData, error: newError } = await supabaseAdmin()
+        .from("site_settings")
+        .insert({ perth_fee: 100, outside_fee: 200, free_threshold: 150 })
+        .select()
+        .single();
+      if (newError) return { id: 'default', perth_fee: 100, outside_fee: 200, free_threshold: 150, updated_at: '' };
+      return newData as SiteSettings;
+    }
+    console.error("getSiteSettings Error:", error);
+    return null;
+  }
+  return data as SiteSettings;
+}
+
+export async function updateSiteSettings(settings: Partial<Omit<SiteSettings, "id" | "updated_at">>): Promise<boolean> {
+  try {
+    const { data: current } = await supabaseAdmin().from("site_settings").select("id").limit(1).single();
+    if (current) {
+      const { error } = await supabaseAdmin().from("site_settings").update(settings).eq("id", current.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabaseAdmin().from("site_settings").insert(settings);
+      if (error) throw error;
+    }
+    return true;
+  } catch (err) {
+    console.error("updateSiteSettings Error:", err);
     return false;
   }
 }

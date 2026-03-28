@@ -3,9 +3,9 @@ import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { createOrder, AddressInput } from "@/lib/supabase-queries";
+import { createOrder, AddressInput, getSiteSettings } from "@/lib/supabase-queries";
 import { CheckCircle } from "lucide-react";
 import { useCsrfToken } from "@/lib/csrf";
 
@@ -26,10 +26,17 @@ export default function CheckoutPage() {
   const csrfToken = useCsrfToken();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [settings, setSettings] = useState({ perth_fee: 100, outside_fee: 200, free_threshold: 150 });
   
+  useEffect(() => {
+    getSiteSettings().then(s => { if (s) setSettings(s); });
+  }, []);
+
   // New Location state
   const [location, setLocation] = useState("perth"); // "perth" or "outside"
-  const shippingFee = location === "perth" ? 100 : 200;
+  
+  const subtotal = getTotal();
+  const shippingFee = subtotal >= settings.free_threshold ? 0 : (location === "perth" ? settings.perth_fee : settings.outside_fee);
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "",
