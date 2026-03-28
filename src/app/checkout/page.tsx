@@ -145,11 +145,15 @@ export default function CheckoutPage() {
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input type="radio" name="location" value="perth" checked={location === "perth"} onChange={() => setLocation("perth")} className="w-4 h-4 text-black focus:ring-black" />
-                    <span className="text-sm">Within Perth (Delivery: $100 AUD)</span>
+                    <span className="text-sm">
+                      Within Perth (Delivery: {subtotal >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.perth_fee} AUD`})
+                    </span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input type="radio" name="location" value="outside" checked={location === "outside"} onChange={() => setLocation("outside")} className="w-4 h-4 text-black focus:ring-black" />
-                    <span className="text-sm">Outside Perth (Delivery: $200 AUD)</span>
+                    <span className="text-sm">
+                      Outside Perth (Delivery: {subtotal >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.outside_fee} AUD`})
+                    </span>
                   </label>
                 </div>
               </div>
