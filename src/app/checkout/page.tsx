@@ -74,7 +74,7 @@ export default function CheckoutPage() {
     
     if (order) {
       clearCart();
-      router.push(`/checkout/success?id=${order.id}${!user ? "&guest=true" : ""}`);
+      router.push(`/checkout/success?id=${order.id}&total=${total}${!user ? "&guest=true" : ""}`);
     } else {
       setError("Failed to place order. Please try again.");
     }

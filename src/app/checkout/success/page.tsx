@@ -62,7 +62,7 @@ function SuccessContent() {
           </div>
           <div className="flex justify-between pt-2 border-t mt-2">
             <span className="text-gray-600 font-bold">Total Amount Due:</span>
-            <span className="font-black text-xl text-accent">AUD ${orderId ? "--" : parseFloat(total).toFixed(2)}</span>
+            <span className="font-black text-xl text-accent">AUD ${parseFloat(total).toFixed(2)}</span>
           </div>
           
           <div className="hidden print:block mt-8 pt-8 border-t border-dashed">
