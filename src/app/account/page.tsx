@@ -85,7 +85,7 @@ export default function AccountPage() {
 
   if (!user) {
     return (
-      <div className="pt-32 pb-20 container-custom text-center min-h-[60vh]">
+      <div className="pt-40 pb-20 container-custom text-center min-h-[60vh]">
         <h1 className="text-3xl font-black uppercase tracking-tight mb-4">My Account</h1>
         <p className="text-gray-500 mb-8">Please sign in to view your account details.</p>
         <Link href="/login" className="btn-primary inline-block">Sign In</Link>
@@ -94,7 +94,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+    <div className="pt-32 pb-20 bg-gray-50 min-h-screen">
       <div className="container-custom max-w-5xl">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-black uppercase tracking-tight">Your Account</h1>

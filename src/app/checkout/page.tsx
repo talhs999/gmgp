@@ -85,7 +85,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="pt-24 pb-20 bg-gray-50 min-h-screen">
+    <div className="pt-32 pb-20 bg-gray-50 min-h-screen">
       <div className="container-custom max-w-6xl">
         <h1 className="text-3xl font-black uppercase tracking-tight mb-8">Secure Checkout</h1>
         
