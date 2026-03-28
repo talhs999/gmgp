@@ -24,7 +24,7 @@ export const useCartStore = create<CartStore>()(
       addItem: (product, quantity = 1, weightOption) => {
         set((state) => {
           const existingIndex = state.items.findIndex(
-            (i) => i.product.id === product.id
+            (i) => i.product.id === product.id && i.weight_option?.label === weightOption?.label
           );
           if (existingIndex > -1) {
             const updated = [...state.items];
@@ -59,7 +59,10 @@ export const useCartStore = create<CartStore>()(
 
       getTotal: () =>
         get().items.reduce(
-          (sum, item) => sum + item.product.price * item.quantity,
+          (sum, item) => {
+            const price = item.weight_option ? item.weight_option.price : item.product.price;
+            return sum + price * item.quantity;
+          },
           0
         ),
 

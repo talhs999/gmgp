@@ -46,7 +46,7 @@ export interface CartItem {
 // Order Types
 export interface Order {
   id: string;
-  user_id: string;
+  user_id: string | null;
   status: "pending" | "confirmed" | "preparing" | "delivered" | "cancelled";
   total: number;
   delivery_date: string | null;

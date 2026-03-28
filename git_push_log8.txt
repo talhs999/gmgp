@@ -1,0 +1,8 @@
+﻿git : To https://github.com/talhs999/gmgp.git
+At line:1 char:164
++ ... and strict order deletion in admin panel" 2>&1; git push 2>&1 | Out-F ...
++                                                     ~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://github.com/talhs999/gmgp.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   455b259..57932e4  main -> main

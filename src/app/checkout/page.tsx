@@ -63,20 +63,13 @@ export default function CheckoutPage() {
 
     const total = getTotal() + shippingFee;
 
-    if (user) {
-      const order = await createOrder(user.id, total, orderItems, address);
-      if (order) {
-        clearCart();
-        router.push(`/checkout/success?id=${order.id}`);
-      } else {
-        setError("Failed to place order. Please try again.");
-      }
+    const order = await createOrder(user?.id || null, total, orderItems, address);
+    
+    if (order) {
+      clearCart();
+      router.push(`/checkout/success?id=${order.id}${!user ? "&guest=true" : ""}`);
     } else {
-      // Guest order flow
-      setTimeout(() => {
-        clearCart();
-        router.push(`/checkout/success?guest=true&total=${total}&fee=${shippingFee}`);
-      }, 800);
+      setError("Failed to place order. Please try again.");
     }
     setLoading(false);
   };

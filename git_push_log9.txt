@@ -1,0 +1,8 @@
+﻿git : To https://github.com/talhs999/gmgp.git
+At line:1 char:226
++ ... LCP and add ARIA labels for higher a11y score"; git push 2>&1 | Out-F ...
++                                                     ~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://github.com/talhs999/gmgp.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   57932e4..469d2c6  main -> main

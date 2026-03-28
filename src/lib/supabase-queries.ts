@@ -134,7 +134,7 @@ export interface AddressInput {
 }
 
 export async function createOrder(
-  userId: string,
+  userId: string | null,
   total: number,
   items: OrderItemInput[],
   address: AddressInput
