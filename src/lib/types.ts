@@ -85,6 +85,7 @@ export interface Profile {
 
 export interface AddressSnapshot {
   full_name: string;
+  email?: string;
   address: string;
   suburb: string;
   state: string;
