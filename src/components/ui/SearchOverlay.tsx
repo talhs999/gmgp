@@ -8,7 +8,7 @@ interface SearchOverlayProps {
   onClose: () => void;
 }
 
-const trending = ["Wagyu Beef", "Lamb Chops", "BBQ Pack", "Chicken Thighs", "Pork Ribs"];
+const trending = ["Wagyu Beef", "Lamb Chops", "BBQ Pack", "Chicken Thighs", "Black Angus"];
 
 export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState("");

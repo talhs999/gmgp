@@ -85,37 +85,6 @@ export const MOCK_PRODUCTS: Product[] = [
     tags: ["lamb", "leg", "roast", "family"], weight_options: [{label:"1.5kg",price:39.99},{label:"2.5kg",price:59.99}],
     leanness_rating: 5, firmness_rating: 5, richness_rating: 7, created_at: new Date().toISOString(),
   },
-  // ─── PORK ───────────────────────────────
-  {
-    id: "9", name: "Pork Belly Strips", slug: "pork-belly-strips",
-    description: "Thick-cut pork belly strips with gorgeous fat layers. BBQ low and slow for crispy skin and melt-in-the-mouth meat.",
-    category_id: "pork", category: { id: "pork", name: "Pork", slug: "pork", image_url: null, sort_order: 3 },
-    price: 22.99, compare_at_price: null,
-    image_url: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80",
-    images: [], badge: "BBQ MUST-HAVE", badge_color: "red", in_stock: true, is_featured: true, is_best_seller: true,
-    tags: ["pork", "belly", "bbq"], weight_options: [{label:"500g",price:22.99},{label:"1kg",price:39.99}],
-    leanness_rating: 2, firmness_rating: 5, richness_rating: 9, created_at: new Date().toISOString(),
-  },
-  {
-    id: "10", name: "Pork Spare Ribs Full Rack", slug: "pork-spare-ribs",
-    description: "A full rack of meaty pork spare ribs. Low-and-slow BBQ heaven with a smoky glaze.",
-    category_id: "pork", category: { id: "pork", name: "Pork", slug: "pork", image_url: null, sort_order: 3 },
-    price: 32.99, compare_at_price: 44.99,
-    image_url: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=800&q=80",
-    images: [], badge: null, badge_color: null, in_stock: true, is_featured: false, is_best_seller: true,
-    tags: ["pork", "ribs", "bbq"], weight_options: [{label:"1kg",price:32.99},{label:"1.5kg",price:44.99}],
-    leanness_rating: 3, firmness_rating: 5, richness_rating: 8, created_at: new Date().toISOString(),
-  },
-  {
-    id: "11", name: "Pork Neck Collar Steak", slug: "pork-neck-collar",
-    description: "The secret Thai BBQ cut — pork neck with beautiful fat marbling. Grill hot and fast for incredible results.",
-    category_id: "pork", category: { id: "pork", name: "Pork", slug: "pork", image_url: null, sort_order: 3 },
-    price: 19.99, compare_at_price: null,
-    image_url: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?w=800&q=80",
-    images: [], badge: "NEW", badge_color: "green", in_stock: true, is_featured: false, is_best_seller: false,
-    tags: ["pork", "collar", "bbq"], weight_options: [{label:"500g",price:19.99}],
-    leanness_rating: 3, firmness_rating: 6, richness_rating: 8, created_at: new Date().toISOString(),
-  },
   // ─── CHICKEN ────────────────────────────
   {
     id: "12", name: "Chicken Maryland Pack", slug: "chicken-maryland",
@@ -127,6 +96,7 @@ export const MOCK_PRODUCTS: Product[] = [
     tags: ["chicken", "maryland", "family"], weight_options: [{label:"1kg",price:16.99},{label:"2kg",price:29.99}],
     leanness_rating: 7, firmness_rating: 6, richness_rating: 5, created_at: new Date().toISOString(),
   },
+
   {
     id: "13", name: "Chicken Thigh Fillets Skinless", slug: "chicken-thigh-skinless",
     description: "Tender, juicy skinless chicken thigh fillets — the versatile protein for everyday cooking.",
@@ -150,7 +120,7 @@ export const MOCK_PRODUCTS: Product[] = [
   // ─── BBQ PACKS ──────────────────────────
   {
     id: "15", name: "Ultimate BBQ Party Pack", slug: "ultimate-bbq-pack",
-    description: "The perfect pack for your next gathering. Includes beef burgers, lamb chops, chicken wings, pork ribs, and snags — everything you need for an epic BBQ.",
+    description: "The perfect pack for your next gathering. Includes beef burgers, lamb chops, chicken wings, and snags — everything you need for an epic BBQ.",
     category_id: "bbq", category: { id: "bbq", name: "BBQ Packs", slug: "bbq", image_url: null, sort_order: 5 },
     price: 79.99, compare_at_price: 109.99,
     image_url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80",
@@ -340,7 +310,6 @@ export const MOCK_PRODUCTS: Product[] = [
 export const MOCK_CATEGORIES = [
   { id: "beef", name: "Beef", slug: "beef", image_url: null, sort_order: 1 },
   { id: "lamb", name: "Lamb", slug: "lamb", image_url: null, sort_order: 2 },
-  { id: "pork", name: "Pork", slug: "pork", image_url: null, sort_order: 3 },
   { id: "chicken", name: "Chicken", slug: "chicken", image_url: null, sort_order: 4 },
   { id: "bbq", name: "BBQ Packs", slug: "bbq", image_url: null, sort_order: 5 },
   { id: "wagyu", name: "Wagyu", slug: "wagyu", image_url: null, sort_order: 6 },

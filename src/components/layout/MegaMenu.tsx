@@ -5,7 +5,6 @@ import Image from "next/image";
 const categories = [
   { name: "Beef", slug: "beef", emoji: "🥩" },
   { name: "Lamb", slug: "lamb", emoji: "🐑" },
-  { name: "Pork", slug: "pork", emoji: "🐷" },
   { name: "Chicken", slug: "chicken", emoji: "🍗" },
   { name: "BBQ Packs", slug: "bbq", emoji: "🔥" },
   { name: "Wagyu", slug: "wagyu", emoji: "⭐" },

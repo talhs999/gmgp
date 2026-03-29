@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     template: "%s | GMGP Premium Meats",
   },
   description:
-    "Shop premium quality Australian meats online. Beef, Lamb, Pork, Chicken, Wagyu & more. Fresh cuts delivered to your door every Saturday.",
-  keywords: ["premium meat", "Australian butcher", "online butcher", "wagyu beef", "lamb", "pork", "chicken"],
+    "Shop premium quality Australian meats online. Beef, Lamb, Chicken, Wagyu & more. Fresh cuts delivered to your door every Saturday.",
+  keywords: ["premium meat", "Australian butcher", "online butcher", "wagyu beef", "lamb", "chicken"],
   openGraph: {
     type: "website",
     locale: "en_AU",

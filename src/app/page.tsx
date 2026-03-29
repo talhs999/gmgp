@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "GMGP Premium Meats | Australia's Best Online Butcher",
-  description: "Shop premium Australian meats delivered to your door every Saturday. Wagyu, Beef, Lamb, Pork, Chicken, BBQ Packs & more.",
+  description: "Shop premium Australian meats delivered to your door every Saturday. Wagyu, Beef, Lamb, Chicken, BBQ Packs & more.",
 };
 
 export default function HomePage() {

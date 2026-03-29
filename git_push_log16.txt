@@ -1,0 +1,22 @@
+﻿git : To https://github.
+com/talhs999/gmgp.git
+At line:1 char:128
++ ... ght options, and 
+guest checkout 
+features" 2>&1; git 
+push 2>&1 | Out-F ...
++                       
+                        
+      ~~~~~~~~~~~~~
+    + CategoryInfo      
+        : NotSpecified  
+  : (To https://githu   
+ b.com/talhs999/gmgp    
+.git:String) [], Re    
+moteException
+    + FullyQualifiedErr 
+   orId : NativeComman  
+  dError
+ 
+   957baef..42fe1d9  
+main -> main

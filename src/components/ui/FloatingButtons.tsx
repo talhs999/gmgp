@@ -49,7 +49,7 @@ const KB = {
   },
 
   products: {
-    categories: ["Beef", "Lamb", "Pork", "Chicken", "BBQ Packs", "Wagyu", "Sausages", "Burgers", "Marinated", "Halal", "Gift Packs"],
+    categories: ["Beef", "Lamb", "Chicken", "BBQ Packs", "Wagyu", "Sausages", "Burgers", "Marinated", "Halal", "Gift Packs"],
     highlights: [
       { name: "Wagyu Ribeye Steak MB5+", price: "A$89.99", category: "Beef/Wagyu", badge: "ALL-TIME FAVOURITE" },
       { name: "Black Angus Tenderloin Fillet", price: "A$64.99", category: "Beef" },
@@ -59,8 +59,6 @@ const KB = {
       { name: "Lamb Shoulder Chops Pack", price: "A$29.99", category: "Lamb", badge: "ALL-TIME FAVOURITE" },
       { name: "Lamb Rack – French Trimmed", price: "A$54.99", category: "Lamb", badge: "PREMIUM" },
       { name: "Lamb Leg Bone-In", price: "A$39.99", category: "Lamb", badge: "FAMILY PACK" },
-      { name: "Pork Belly Strips", price: "A$22.99", category: "Pork", badge: "BBQ MUST-HAVE" },
-      { name: "Pork Spare Ribs Full Rack", price: "A$32.99", category: "Pork" },
       { name: "Chicken Maryland Pack", price: "A$16.99", category: "Chicken", badge: "FAMILY PACK" },
       { name: "Chicken Thigh Fillets Skinless", price: "A$14.99", category: "Chicken" },
       { name: "Whole Free Range Chicken", price: "A$21.99", category: "Chicken", badge: "FREE RANGE" },
@@ -158,7 +156,7 @@ function getBotReply(msg: string): string {
 
   // ── BBQ ──────────────────────────────────────────────────────────
   if (/bbq|grill|barbecue|bbq pack|party/.test(q)) {
-    return "🔥 BBQ Packs (great value!):\n• **Ultimate BBQ Party Pack** — A$79.99 (was $109.99) — burgers, chops, wings, ribs, snags!\n• **Weekend BBQ Essentials** — A$54.99 (was $74.99) — 4 rump steaks, lamb cutlets, chicken wings, sausages\n• **Family Grill Pack x8** — A$44.99\n\nBest value? → Ultimate BBQ Party Pack saves you $30!";
+    return "🔥 BBQ Packs (great value!):\n• **Ultimate BBQ Party Pack** — A$79.99 (was $109.99) — burgers, chops, wings, and snags!\n• **Weekend BBQ Essentials** — A$54.99 (was $74.99) — 4 rump steaks, lamb cutlets, chicken wings, sausages\n• **Family Grill Pack x8** — A$44.99\n\nBest value? → Ultimate BBQ Party Pack saves you $30!";
   }
 
   // ── CHICKEN ──────────────────────────────────────────────────────
@@ -166,10 +164,6 @@ function getBotReply(msg: string): string {
     return "🍗 Our Chicken Range:\n• **Chicken Breast Fillets 1kg** — A$18.99\n• **Chicken Thigh Fillets Skinless** — A$14.99 ← Best value!\n• **Chicken Maryland Pack** — A$16.99\n• **Whole Free Range Chicken** — A$21.99\n• **Teriyaki Chicken Wings 1kg** (marinated) — A$19.99\n\nFor karahi/biryani → Thigh Fillets are perfect!";
   }
 
-  // ── PORK ─────────────────────────────────────────────────────────
-  if (/pork|bacon|rib.*pork|belly|spar.*rib/.test(q)) {
-    return "🐷 Our Pork Cuts:\n• **Pork Belly Strips 500g** — A$22.99 (BBQ Must-Have!)\n• **Pork Spare Ribs Full Rack** — A$32.99 (was $44.99)\n• **Pork Neck Collar Steak** — A$19.99 (Thai BBQ style!)\n\nBest for slow cook BBQ → Belly Strips low & slow = crispy perfection!";
-  }
 
   // ── SAUSAGES / BURGERS ───────────────────────────────────────────
   if (/sausage|snag|burger|patt(y|ies)|mince/.test(q)) {
@@ -193,7 +187,7 @@ function getBotReply(msg: string): string {
 
   // ── SLOW COOK / ROAST ─────────────────────────────────────────────
   if (/slow.?cook|braise|stew|roast|oven/.test(q)) {
-    return "🍲 Best for Slow Cooking & Roasts:\n• **Beef Cheeks** — A$27.99 (silky braised perfection)\n• **Oxtail Braising Pack** — A$22.99\n• **Lamb Leg Bone-In** — A$39.99 (perfect Sunday roast!)\n• **Pork Spare Ribs** — A$32.99\n\nPro tip: Beef cheeks + red wine + 6hrs = restaurant quality! 🍷";
+    return "🍲 Best for Slow Cooking & Roasts:\n• **Beef Cheeks** — A$27.99 (silky braised perfection)\n• **Oxtail Braising Pack** — A$22.99\n• **Lamb Leg Bone-In** — A$39.99 (perfect Sunday roast!)\n\nPro tip: Beef cheeks + red wine + 6hrs = restaurant quality! 🍷";
   }
 
   // ── FRESH / QUALITY ───────────────────────────────────────────────
@@ -228,7 +222,7 @@ function getBotReply(msg: string): string {
 
   // ── PRODUCTS / CATEGORIES OVERVIEW ───────────────────────────────
   if (/product|categor|what.*sell|what.*have|menu|range/.test(q)) {
-    return "🥩 We sell 30+ premium cuts across:\n\n🐄 Beef | 🐑 Lamb | 🐷 Pork | 🍗 Chicken | 🔥 BBQ Packs | ⭐ Wagyu | 🌭 Sausages | 🍔 Burgers | 🌿 Marinated | ✅ Halal | 🎁 Gift Packs\n\nPrices from A$12.99 to A$149.99. Visit our **Shop** page to browse everything!";
+    return "🥩 We sell 30+ premium cuts across:\n\n🐄 Beef | 🐑 Lamb | 🍗 Chicken | 🔥 BBQ Packs | ⭐ Wagyu | 🌭 Sausages | 🍔 Burgers | 🌿 Marinated | ✅ Halal | 🎁 Gift Packs\n\nPrices from A$12.99 to A$149.99. Visit our **Shop** page to browse everything!";
   }
 
   // ── THANKS / BYE ─────────────────────────────────────────────────

@@ -6,7 +6,6 @@ const footerLinks = {
     { label: "All Products", href: "/shop" },
     { label: "Beef", href: "/shop/beef" },
     { label: "Lamb", href: "/shop/lamb" },
-    { label: "Pork", href: "/shop/pork" },
     { label: "Chicken", href: "/shop/chicken" },
     { label: "BBQ Packs", href: "/shop/bbq" },
     { label: "Wagyu", href: "/shop/wagyu" },
