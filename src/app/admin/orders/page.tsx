@@ -15,7 +15,7 @@ const statusColors: Record<string, string> = {
 };
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<(Order & { profile?: { full_name: string; email: string; phone: string } })[]>([]);
+  const [orders, setOrders] = useState<(Order & { profile?: { full_name: string } })[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
