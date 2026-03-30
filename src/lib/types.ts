@@ -100,3 +100,13 @@ export interface SiteSettings {
   free_threshold: number;
   updated_at: string;
 }
+
+// Review Types
+export interface ProductReview {
+  id: string;
+  product_id: string;
+  user_name: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}

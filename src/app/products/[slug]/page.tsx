@@ -2,7 +2,7 @@
 import { use, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { getProductBySlug, getRelatedProducts } from "@/lib/supabase-queries";
+import { getProductBySlug, getRelatedProducts, getProductReviews } from "@/lib/supabase-queries";
 import { useCartStore } from "@/store/cartStore";
 import ProductCard from "@/components/product/ProductCard";
 import ProductGallery from "@/components/product/ProductGallery";
@@ -10,8 +10,10 @@ import Accordion from "@/components/ui/Accordion";
 import ShareButton from "@/components/product/ShareButton";
 import FeedbackModal from "@/components/product/FeedbackModal";
 import BeforeAfterSlider from "@/components/product/BeforeAfterSlider";
+import ReviewSlider from "@/components/product/ReviewSlider";
+import ReviewForm from "@/components/product/ReviewForm";
 import { notFound } from "next/navigation";
-import { WeightOption, Product } from "@/lib/types";
+import { WeightOption, Product, ProductReview } from "@/lib/types";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -21,13 +23,19 @@ export default function ProductDetailPage({ params }: Props) {
   const { slug } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFoundState, setNotFoundState] = useState(false);
   const [qty, setQty] = useState(1);
   const [selectedWeight, setSelectedWeight] = useState<WeightOption | undefined>(undefined);
   const [showStickyBar, setShowStickyBar] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
+  const addItem = useCartStore((s: any) => s.addItem);
   const addToCartRef = useRef<HTMLButtonElement>(null);
+
+  const fetchReviews = async (productId: string) => {
+    const res = await getProductReviews(productId);
+    setReviews(res);
+  };
 
   useEffect(() => {
     getProductBySlug(slug).then((p) => {
@@ -35,6 +43,7 @@ export default function ProductDetailPage({ params }: Props) {
       setProduct(p);
       setSelectedWeight(p.weight_options?.[0]);
       getRelatedProducts(p.category_id ?? "", p.id).then(setRelated);
+      fetchReviews(p.id);
       setLoading(false);
     });
   }, [slug]);
@@ -138,7 +147,7 @@ export default function ProductDetailPage({ params }: Props) {
                 <div className="mb-8">
                   <p className="text-xs font-bold uppercase tracking-widest mb-3">Size / Weight</p>
                   <div className="flex gap-2 flex-wrap">
-                    {product.weight_options.map((w) => (
+                    {product.weight_options.map((w: WeightOption) => (
                       <button
                         key={w.label}
                         onClick={() => setSelectedWeight(w)}
@@ -207,6 +216,9 @@ export default function ProductDetailPage({ params }: Props) {
                 <FeedbackModal productName={product.name} />
               </div>
 
+              {/* Review Slider below Share/Ask */}
+              <ReviewSlider reviews={reviews} />
+
               {/* Expandable Info */}
               <div className="mt-8 border-t border-gray-200">
                 <Accordion title="Delivery Information" defaultOpen>
@@ -231,6 +243,9 @@ export default function ProductDetailPage({ params }: Props) {
               afterImage={product.image_url} 
             />
           </div>
+
+          {/* Review Submission Form */}
+          <ReviewForm productId={product.id} onSuccess={() => fetchReviews(product.id)} />
 
           {/* Related Products */}
           {related.length > 0 && (

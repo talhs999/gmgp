@@ -1,6 +1,6 @@
 "use server";
 import { supabase, supabaseAdmin } from "./supabase";
-import { Product, Category, Order, Profile, SiteSettings } from "./types";
+import { Product, Category, Order, Profile, SiteSettings, ProductReview } from "./types";
 import { sendOrderConfirmationEmail, sendOrderCancellationEmail } from "./email-service";
 
 // ─── PRODUCTS ────────────────────────────────────────────────
@@ -417,4 +417,27 @@ export async function updateSiteSettings(settings: Partial<Omit<SiteSettings, "i
     console.error("updateSiteSettings Error:", err);
     return false;
   }
+}
+
+// ─── REVIEWS ─────────────────────────────────────────────────
+
+export async function getProductReviews(productId: string): Promise<ProductReview[]> {
+  const { data, error } = await supabaseAdmin()
+    .from("product_reviews")
+    .select("*")
+    .eq("product_id", productId)
+    .order("created_at", { ascending: false });
+  if (error) { console.error("getProductReviews:", error); return []; }
+  return (data as ProductReview[]) ?? [];
+}
+
+export async function createProductReview(review: Omit<ProductReview, "id" | "created_at">): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("product_reviews")
+    .insert(review);
+  if (error) {
+    console.error("createProductReview:", error);
+    return false;
+  }
+  return true;
 }
