@@ -180,14 +180,17 @@ export async function getUserOrders(userId: string): Promise<Order[]> {
   return (data as Order[]) ?? [];
 }
 
-export async function getAllOrders(): Promise<(Order & { profile?: { full_name: string } })[]> {
-  const client = supabaseAdmin();
-  const { data, error } = await client
-    .from("orders")
-    .select("*, order_items(*, product:products(name, image_url, slug)), profile:profiles(full_name)")
-    .order("created_at", { ascending: false });
-  if (error) { console.error("getAllOrders:", error); return []; }
   return (data as (Order & { profile?: { full_name: string } })[]) ?? [];
+}
+
+export async function getOrderById(id: string): Promise<Order | null> {
+  const { data, error } = await supabaseAdmin()
+    .from("orders")
+    .select("*, order_items(*, product:products(name, image_url, slug))")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) { console.error("getOrderById:", error); return null; }
+  return data as Order | null;
 }
 
 export async function updateOrderStatus(id: string, status: Order["status"]): Promise<boolean> {
