@@ -80,8 +80,8 @@ export default function AdminOrdersPage() {
               {orders.map((order) => {
                 const isExpanded = expandedRow === order.id;
                 const customerName = order.profile?.full_name || order.address_snapshot?.full_name || "Guest";
-                const customerEmail = order.profile?.email || order.address_snapshot?.email || "No Email";
-                const customerPhone = order.profile?.phone || order.address_snapshot?.phone || "No Phone";
+                const customerEmail = order.address_snapshot?.email || "No Email";
+                const customerPhone = order.address_snapshot?.phone || "No Phone";
 
                 return (
                   <Fragment key={order.id}>
