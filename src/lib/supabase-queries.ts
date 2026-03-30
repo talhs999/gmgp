@@ -441,3 +441,21 @@ export async function createProductReview(review: Omit<ProductReview, "id" | "cr
   }
   return true;
 }
+
+export async function getAllReviewsWithProducts(): Promise<(ProductReview & { product?: { name: string, slug: string } })[]> {
+  const { data, error } = await supabaseAdmin()
+    .from("product_reviews")
+    .select("*, product:products(name, slug)")
+    .order("created_at", { ascending: false });
+  if (error) { console.error("getAllReviewsWithProducts:", error); return []; }
+  return (data as (ProductReview & { product?: { name: string, slug: string } })[]) ?? [];
+}
+
+export async function deleteProductReview(id: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("product_reviews")
+    .delete()
+    .eq("id", id);
+  if (error) { console.error("deleteProductReview:", error); return false; }
+  return true;
+}

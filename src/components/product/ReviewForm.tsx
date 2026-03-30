@@ -79,7 +79,7 @@ export default function ReviewForm({ productId, onSuccess }: Props) {
             type="text" 
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Muhammad Talha"
+            placeholder="Your Name"
             className="w-full bg-white border border-gray-200 px-6 py-4 rounded-xl focus:outline-none focus:border-black transition-colors"
             required
           />

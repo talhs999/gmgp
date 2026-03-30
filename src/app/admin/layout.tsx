@@ -13,6 +13,7 @@ const links = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/categories", label: "Categories", icon: Tag },
   { href: "/admin/settings", label: "Shipping", icon: Truck },
+  { href: "/admin/reviews", label: "Reviews", icon: ShoppingBag },
   { href: "/admin/users", label: "Users", icon: Users },
 ];
 

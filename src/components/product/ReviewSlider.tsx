@@ -10,29 +10,52 @@ interface Props {
 export default function ReviewSlider({ reviews }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const shouldScroll = reviews.length > 3;
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  const shouldScroll = reviews.length >= 3;
 
   useEffect(() => {
-    if (!shouldScroll || isPaused) return;
+    if (!shouldScroll || isPaused || isDragging) return;
 
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
     const scrollWidth = scrollContainer.scrollWidth;
-    const clientWidth = scrollContainer.clientWidth;
     
-    // Simple auto-scroll logic
-    let scrollPos = scrollContainer.scrollLeft;
     const interval = setInterval(() => {
-      scrollPos += 1;
-      if (scrollPos >= scrollWidth / 2) {
-        scrollPos = 0;
+      scrollContainer.scrollLeft += 1;
+      if (scrollContainer.scrollLeft >= scrollWidth / 2) {
+        scrollContainer.scrollLeft = 0;
       }
-      scrollContainer.scrollLeft = scrollPos;
     }, 30);
 
     return () => clearInterval(interval);
-  }, [shouldScroll, isPaused, reviews]);
+  }, [shouldScroll, isPaused, isDragging, reviews]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!shouldScroll) return;
+    setIsDragging(true);
+    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollRef.current?.scrollLeft || 0);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
+    setIsPaused(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !scrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - (scrollRef.current.offsetLeft || 0);
+    const walk = (x - startX) * 2;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
   if (reviews.length === 0) return null;
 
@@ -51,8 +74,11 @@ export default function ReviewSlider({ reviews }: Props) {
       <div 
         ref={scrollRef}
         className={`flex gap-6 overflow-x-auto pb-4 scrollbar-hide select-none ${shouldScroll ? 'cursor-grab active:cursor-grabbing' : ''}`}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {displayReviews.map((review, idx) => (
