@@ -252,3 +252,63 @@ input[type="range"].attr-slider::-webkit-slider-thumb {
 .admin-sidebar-link:hover { background: #f9fafb; color: #000; }
 .admin-sidebar-link.active { background: #000; color: #fff; }
 .admin-sidebar-link.active:hover { background: #1f2937; }
+
+/* ── Print Styles ──────────────── */
+@media print {
+  /* Hide practically everything */
+  body {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Hide common layout elements */
+  nav, aside, header, footer, .no-print, button, select, .admin-sidebar-link {
+    display: none !important;
+  }
+
+  /* Hide the main scrollable container's background and padding */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Hide all table rows except the one being printed? 
+     Actually, if we just make everything hidden except our target, it's safer. */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Specifically show the printable content and its children */
+  .printable-order-content, 
+  .printable-order-content * {
+    visibility: visible !important;
+  }
+
+  .printable-order-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    display: block !important;
+  }
+
+  /* Fix grid layout in print */
+  .printable-order-content .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+}

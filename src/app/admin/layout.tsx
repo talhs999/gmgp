@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-gray-50 pt-16">
       {/* Sidebar */}
-      <aside className="w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-y-auto z-40">
+      <aside className="w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-y-auto z-40 no-print">
         <div className="p-5 border-b border-gray-100">
           <span className="font-black text-xl tracking-tight uppercase">
             GMGP<span className="text-accent">.</span>

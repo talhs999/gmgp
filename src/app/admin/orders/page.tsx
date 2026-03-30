@@ -169,10 +169,23 @@ export default function AdminOrdersPage() {
                     {isExpanded && (
                       <tr className="bg-gray-50/50">
                         <td colSpan={6} className="px-6 py-8">
-                          <div className="grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2 duration-200">
+                          <div className="printable-order-content grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2 duration-200 p-8 bg-white rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
                             
+                            {/* PRINT-ONLY HEADER - Visible only when printing */}
+                            <div className="hidden print:flex justify-between items-start mb-10 w-full col-span-2 border-b-2 border-black pb-6">
+                              <div>
+                                <h1 className="text-3xl font-black uppercase tracking-tight">GMGP<span className="text-accent">.</span></h1>
+                                <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Quality Australian Butcher Shop</p>
+                              </div>
+                              <div className="text-right">
+                                <h2 className="text-xl font-black uppercase tracking-tight">PACKING SLIP</h2>
+                                <p className="text-sm font-bold text-gray-500 mt-1">Order #{order.id}</p>
+                                <p className="text-xs text-gray-400">{new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString()}</p>
+                              </div>
+                            </div>
+
                             {/* Left Column: Order Items */}
-                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col print:border-none print:shadow-none">
                               <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                 <span className="text-[11px] font-black uppercase tracking-widest text-gray-500">Order Items</span>
                                 <span className="text-[10px] font-bold text-gray-400">#{order.id}</span>
@@ -270,7 +283,7 @@ export default function AdminOrdersPage() {
                                 )}
                               </div>
 
-                              <div className="p-4 bg-gray-50 border-t border-gray-200">
+                              <div className="p-4 bg-gray-50 border-t border-gray-200 no-print">
                                 <button 
                                   onClick={() => window.print()}
                                   className="w-full bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-600 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
