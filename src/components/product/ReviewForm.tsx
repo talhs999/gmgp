@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from 'react';
-import { Star, Send } from 'lucide-react';
+import { Star, Send, X, LogIn, UserPlus } from 'lucide-react';
 import { createProductReview } from '@/lib/supabase-queries';
+import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
 
 interface Props {
   productId: string;
@@ -9,11 +11,21 @@ interface Props {
 }
 
 export default function ReviewForm({ productId, onSuccess }: Props) {
+  const { user } = useAuth();
   const [rating, setRating] = useState(5);
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  const handleInteraction = (e: React.MouseEvent | React.FocusEvent) => {
+    if (!user) {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowAuthModal(true);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,8 +57,12 @@ export default function ReviewForm({ productId, onSuccess }: Props) {
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-12 mb-20 max-w-4xl mx-auto shadow-sm">
-      <div className="text-center mb-10">
+    <div className="relative bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-12 mb-20 max-w-4xl mx-auto shadow-sm">
+      <div 
+        className={!user ? "cursor-pointer" : ""}
+        onClickCapture={handleInteraction}
+      >
+        <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-2">Leave a Review</h2>
         <p className="text-gray-500 text-sm">Share your experience with this premium cut.</p>
       </div>
@@ -123,6 +139,55 @@ export default function ReviewForm({ productId, onSuccess }: Props) {
           )}
         </button>
       </form>
+    </div>
+
+      {/* Auth Prompt Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all animate-in fade-in">
+          <div className="bg-white rounded-3xl p-8 md:p-10 max-w-md w-full shadow-2xl relative animate-in zoom-in slide-in-from-bottom-4 duration-300">
+            <button 
+              onClick={() => setShowAuthModal(false)}
+              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-black transition-colors"
+            >
+              <X size={20} />
+            </button>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6 text-accent animate-pulse">
+                <LogIn size={32} />
+              </div>
+              <h3 className="text-2xl font-black uppercase tracking-tight mb-2">Login Required</h3>
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                To leave a product review, please login or register for a GMGP account.
+              </p>
+              
+              <div className="space-y-3">
+                <Link 
+                  href="/login" 
+                  className="btn-accent w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold transition-transform active:scale-95"
+                >
+                  <LogIn size={18} />
+                  LOGIN TO MY ACCOUNT
+                </Link>
+                <Link 
+                  href="/register" 
+                  className="w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-gray-400 hover:text-black transition-colors"
+                >
+                  <UserPlus size={18} />
+                  REGISTER NEW ACCOUNT
+                </Link>
+              </div>
+              
+              <button 
+                onClick={() => setShowAuthModal(false)}
+                className="mt-6 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
