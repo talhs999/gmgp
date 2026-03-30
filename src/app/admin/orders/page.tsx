@@ -168,41 +168,118 @@ export default function AdminOrdersPage() {
                     {/* Expandable Order Details */}
                     {isExpanded && (
                       <tr className="bg-gray-50/50">
-                        <td colSpan={6} className="px-6 py-4">
-                          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-                            <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
-                              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Order Items Details</span>
-                              <span className="text-[10px] font-bold text-gray-500">Order Ref: {order.id}</span>
-                            </div>
-                            <div className="divide-y divide-gray-100">
-                              {(order.order_items as any[])?.map((item: any, idx: number) => (
-                                <div key={item.id} className="p-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-400 overflow-hidden">
-                                      {item.product?.image_url ? (
-                                        <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />
-                                      ) : (
-                                        <ShoppingBag size={14} />
-                                      )}
-                                    </div>
-                                    <div>
-                                      <div className="text-sm font-bold text-gray-900">{item.product?.name || "Product Deleted"}</div>
-                                      <div className="text-[10px] text-gray-500">
-                                        {item.weight_option ? `${item.weight_option}` : "Standard Pack"} 
-                                        {item.quantity > 1 && <span className="ml-2 font-medium">× {item.quantity}</span>}
+                        <td colSpan={6} className="px-6 py-8">
+                          <div className="grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2 duration-200">
+                            
+                            {/* Left Column: Order Items */}
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                              <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                                <span className="text-[11px] font-black uppercase tracking-widest text-gray-500">Order Items</span>
+                                <span className="text-[10px] font-bold text-gray-400">#{order.id}</span>
+                              </div>
+                              <div className="divide-y divide-gray-100 flex-1 overflow-auto max-h-[400px]">
+                                {(order.order_items as any[])?.map((item: any) => (
+                                  <div key={item.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden border border-gray-100">
+                                        {item.product?.image_url ? (
+                                          <img src={item.product.image_url} alt={item.product.name} className="w-full h-full object-cover" />
+                                        ) : (
+                                          <ShoppingBag size={20} />
+                                        )}
+                                      </div>
+                                      <div>
+                                        <div className="text-sm font-bold text-gray-900">{item.product?.name || "Product Deleted"}</div>
+                                        <div className="text-[11px] text-gray-500 mt-0.5">
+                                          <span className="bg-gray-100 px-1.5 py-0.5 rounded font-bold text-gray-600">
+                                            {item.weight_option ? `${item.weight_option}` : "Standard Pack"}
+                                          </span>
+                                          {item.quantity > 1 && (
+                                            <span className="ml-2 font-bold text-accent">× {item.quantity}</span>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
+                                    <div className="text-sm font-bold text-gray-900">
+                                      ${(item.unit_price * item.quantity).toFixed(2)}
+                                    </div>
                                   </div>
-                                  <div className="text-sm font-bold text-gray-900">
-                                    ${(item.unit_price * item.quantity).toFixed(2)}
+                                ))}
+                              </div>
+                              <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-between items-center mt-auto">
+                                <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">Order Subtotal</span>
+                                <span className="font-black text-gray-900 text-lg">${Number(order.total).toFixed(2)}</span>
+                              </div>
+                            </div>
+
+                            {/* Right Column: Shipping & Delivery */}
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                              <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                                <span className="text-[11px] font-black uppercase tracking-widest text-gray-500">Shipping & Delivery Details</span>
+                              </div>
+                              
+                              <div className="p-6 space-y-6 flex-1">
+                                {/* Delivery Region Badge */}
+                                <div>
+                                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Delivery Region</label>
+                                  <div className="flex items-center gap-2">
+                                    {order.address_snapshot?.state === "WA" ? (
+                                      <span className="bg-blue-50 text-blue-700 border border-blue-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                                        📍 Within Perth (Local)
+                                      </span>
+                                    ) : (
+                                      <span className="bg-orange-50 text-orange-700 border border-orange-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                                        🚚 Outside Perth (Regional)
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
-                              ))}
+
+                                {/* Full Address */}
+                                <div>
+                                  <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Delivery Address</label>
+                                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <p className="font-bold text-gray-900 mb-1">{order.address_snapshot?.full_name}</p>
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                      {order.address_snapshot?.address}<br />
+                                      {order.address_snapshot?.suburb}, {order.address_snapshot?.state} {order.address_snapshot?.postcode}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                {/* Contact Person */}
+                                <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Direct Phone</label>
+                                    <p className="text-sm font-bold text-accent">{customerPhone}</p>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Contact Email</label>
+                                    <p className="text-sm font-bold text-gray-900 truncate">{customerEmail}</p>
+                                  </div>
+                                </div>
+
+                                {/* Delivery Metadata */}
+                                {order.delivery_date && (
+                                  <div className="pt-4 border-t border-gray-100">
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Requested Delivery Date</label>
+                                    <p className="text-sm font-bold text-green-600">
+                                      {new Date(order.delivery_date).toLocaleDateString("en-AU", { weekday: 'long', day: 'numeric', month: 'long' })}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="p-4 bg-gray-50 border-t border-gray-200">
+                                <button 
+                                  onClick={() => window.print()}
+                                  className="w-full bg-white border border-gray-200 py-2 rounded-lg text-xs font-bold uppercase tracking-widest text-gray-600 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                                >
+                                  🖨️ Print Packing Slip
+                                </button>
+                              </div>
                             </div>
-                            <div className="p-3 bg-gray-50 flex justify-between items-center text-sm">
-                              <span className="font-bold text-gray-500 uppercase tracking-widest text-[10px]">Total Amount Paid</span>
-                              <span className="font-black text-accent text-base">${Number(order.total).toFixed(2)}</span>
-                            </div>
+
                           </div>
                         </td>
                       </tr>
