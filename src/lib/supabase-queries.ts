@@ -469,3 +469,22 @@ export async function deleteProductReview(id: string): Promise<boolean> {
   if (error) { console.error("deleteProductReview:", error); return false; }
   return true;
 }
+
+export async function getOrderFeedback(): Promise<Order[]> {
+  const { data, error } = await supabaseAdmin()
+    .from("orders")
+    .select("*")
+    .not("rating", "is", null)
+    .order("created_at", { ascending: false });
+  if (error) { console.error("getOrderFeedback:", error); return []; }
+  return (data as Order[]) ?? [];
+}
+
+export async function deleteOrderFeedback(orderId: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("orders")
+    .update({ rating: null, rating_comment: null })
+    .eq("id", orderId);
+  if (error) { console.error("deleteOrderFeedback:", error); return false; }
+  return true;
+}
