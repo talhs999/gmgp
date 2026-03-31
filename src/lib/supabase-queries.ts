@@ -257,6 +257,15 @@ export async function getAllProfiles(): Promise<Profile[]> {
   return (data as Profile[]) ?? [];
 }
 
+export async function deleteProfile(id: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("profiles")
+    .delete()
+    .eq("id", id);
+  if (error) { console.error("deleteProfile:", error); return false; }
+  return true;
+}
+
 // ─── ADMIN STATS ─────────────────────────────────────────────
 
 export async function getAdminStats() {

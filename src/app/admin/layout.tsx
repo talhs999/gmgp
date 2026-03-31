@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
-  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight, Truck, X,
+  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight, Truck, X, Menu,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -49,18 +49,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
       {/* Mobile Sticky Header */}
-      <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between shadow-sm flex-row-reverse">
-        <span className="font-black text-lg tracking-tight uppercase">
-          GMGP<span className="text-accent">.</span>
-          <span className="text-[10px] font-normal text-gray-400 ml-2">Admin</span>
-        </span>
+      <div className="lg:hidden sticky top-0 left-0 right-0 z-[60] bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between shadow-sm">
         <button 
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2.5 bg-black text-white rounded-xl shadow-md transition-transform active:scale-95"
+          className="p-3 bg-black text-white rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-2 group"
           aria-label="Toggle Menu"
         >
-          {sidebarOpen ? <X size={20} /> : <div className="flex flex-col gap-1 w-5"><div className="h-0.5 bg-white"></div><div className="h-0.5 bg-white w-3"></div><div className="h-0.5 bg-white"></div></div>}
+          {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          <span className="text-[10px] font-black uppercase tracking-widest pr-1">Menu</span>
         </button>
+        <span className="font-black text-lg tracking-tight uppercase">
+          GMGP<span className="text-accent">.</span>
+          <span className="text-[10px] font-normal text-gray-400 ml-2 italic">Admin</span>
+        </span>
       </div>
 
       {/* Sidebar Overlay */}
@@ -71,17 +72,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar Drawer */}
       <aside className={`
-        fixed md:sticky top-0 h-screen w-64 bg-white md:border-r border-gray-200 
-        flex flex-col z-[45] transition-all duration-300 no-print shadow-xl md:shadow-none
-        ${sidebarOpen ? "translate-x-0 right-0" : "translate-x-full md:translate-x-0 right-0"}
+        fixed lg:sticky top-0 h-screen w-72 bg-white lg:border-r border-gray-200 
+        flex flex-col z-[70] transition-all duration-500 ease-in-out no-print shadow-2xl lg:shadow-none
+        ${sidebarOpen ? "translate-x-0 right-0" : "translate-x-full lg:translate-x-0 right-0"}
       `}>
         <div className="p-6 border-b border-gray-100 flex items-center justify-between md:h-16">
-          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-black">
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400 hover:text-black">
             <X size={24} />
           </button>
-          <span className="font-black text-xl tracking-tight uppercase text-right md:text-left w-full">
+          <span className="font-black text-xl tracking-tight uppercase text-right lg:text-left w-full">
             GMGP<span className="text-accent">.</span>
             <span className="text-xs font-normal text-gray-400 ml-2">Admin</span>
           </span>
@@ -106,7 +107,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="p-4 border-t border-gray-100">
-          <Link href="/" className="admin-sidebar-link group">
+          <Link href="/" className="admin-sidebar-link group" onClick={() => setSidebarOpen(false)}>
             <LogOut size={18} className="group-hover:text-accent transition-colors" />
             <span>Back to Store</span>
           </Link>
@@ -116,6 +117,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <main className="flex-1 min-w-0 p-4 md:p-8 pt-6 md:pt-8 w-full max-w-full overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
+          {/* Secondary Admin Toggle (Requested) */}
+          <div className="mb-6 lg:mb-8 flex items-center gap-4">
+            <button 
+              onClick={() => setSidebarOpen(true)}
+              className="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-zinc-800 transition-all flex items-center gap-2 group"
+            >
+              <Menu size={18} className="group-hover:rotate-180 transition-transform duration-300" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Admin Menu</span>
+            </button>
+            <div className="h-px flex-1 bg-gray-100 hidden sm:block"></div>
+          </div>
+
           {children}
         </div>
       </main>
