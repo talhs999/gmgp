@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
       {/* Mobile Sticky Header */}
-      <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between shadow-sm">
+      <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between shadow-sm flex-row-reverse">
         <span className="font-black text-lg tracking-tight uppercase">
           GMGP<span className="text-accent">.</span>
           <span className="text-[10px] font-normal text-gray-400 ml-2">Admin</span>
@@ -73,18 +73,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Sidebar */}
       <aside className={`
-        fixed md:sticky top-0 h-screen w-64 bg-white border-r border-gray-200 
+        fixed md:sticky top-0 h-screen w-64 bg-white md:border-r border-gray-200 
         flex flex-col z-[45] transition-all duration-300 no-print shadow-xl md:shadow-none
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        ${sidebarOpen ? "translate-x-0 right-0" : "translate-x-full md:translate-x-0 right-0"}
       `}>
         <div className="p-6 border-b border-gray-100 flex items-center justify-between md:h-16">
-          <span className="font-black text-xl tracking-tight uppercase">
-            GMGP<span className="text-accent">.</span>
-            <span className="text-xs font-normal text-gray-400 ml-2">Admin</span>
-          </span>
           <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-black">
             <X size={24} />
           </button>
+          <span className="font-black text-xl tracking-tight uppercase text-right md:text-left w-full">
+            GMGP<span className="text-accent">.</span>
+            <span className="text-xs font-normal text-gray-400 ml-2">Admin</span>
+          </span>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
