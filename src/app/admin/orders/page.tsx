@@ -65,8 +65,9 @@ export default function AdminOrdersPage() {
             <p className="font-bold text-gray-400">No orders yet</p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full min-w-[800px]">
+              <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
               <tr>
                 <th className="text-left px-6 py-3">Order ID</th>
                 <th className="text-left px-6 py-3">Customer & Contact</th>
@@ -219,9 +220,19 @@ export default function AdminOrdersPage() {
                                   </div>
                                 ))}
                               </div>
-                              <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-between items-center mt-auto">
-                                <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">Order Subtotal</span>
-                                <span className="font-black text-gray-900 text-lg">${Number(order.total).toFixed(2)}</span>
+                              <div className="p-4 bg-gray-50 border-t border-gray-200 space-y-2 mt-auto">
+                                <div className="flex justify-between items-center text-xs text-gray-500">
+                                   <span className="uppercase tracking-widest font-bold">Items Total</span>
+                                   <span>${((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0).toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between items-center text-xs text-accent">
+                                   <span className="uppercase tracking-widest font-bold">Delivery Fee Paid</span>
+                                   <span>${(Number(order.total) - ((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0)).toFixed(2)}</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                                  <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">Order Grand Total</span>
+                                  <span className="font-black text-gray-900 text-lg">${Number(order.total).toFixed(2)}</span>
+                                </div>
                               </div>
                             </div>
 
@@ -302,7 +313,8 @@ export default function AdminOrdersPage() {
               })}
             </tbody>
           </table>
-        )}
+        </div>
+      )}
       </div>
     </div>
   );

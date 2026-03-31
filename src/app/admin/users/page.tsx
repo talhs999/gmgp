@@ -32,8 +32,9 @@ export default function AdminUsersPage() {
             <p className="font-bold text-gray-400">No registered users yet</p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full min-w-[700px]">
+              <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
               <tr>
                 <th className="text-left px-6 py-3">User</th>
                 <th className="text-left px-6 py-3">Phone</th>
@@ -79,7 +80,8 @@ export default function AdminUsersPage() {
               ))}
             </tbody>
           </table>
-        )}
+        </div>
+      )}
       </div>
     </div>
   );

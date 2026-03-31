@@ -48,11 +48,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
-      {/* Mobile Toggle Button */}
-      <div className="md:hidden fixed top-20 left-4 z-50">
+      {/* Mobile Sticky Header */}
+      <div className="md:hidden sticky top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-16 flex items-center justify-between shadow-sm">
+        <span className="font-black text-lg tracking-tight uppercase">
+          GMGP<span className="text-accent">.</span>
+          <span className="text-[10px] font-normal text-gray-400 ml-2">Admin</span>
+        </span>
         <button 
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-3 bg-black text-white rounded-full shadow-lg"
+          className="p-2.5 bg-black text-white rounded-xl shadow-md transition-transform active:scale-95"
           aria-label="Toggle Menu"
         >
           {sidebarOpen ? <X size={20} /> : <div className="flex flex-col gap-1 w-5"><div className="h-0.5 bg-white"></div><div className="h-0.5 bg-white w-3"></div><div className="h-0.5 bg-white"></div></div>}
@@ -62,7 +66,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden animate-in fade-in"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-[2px] transition-all"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -70,16 +74,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className={`
         fixed md:sticky top-0 h-screen w-64 bg-white border-r border-gray-200 
-        flex flex-col z-[45] transition-transform duration-300 no-print
+        flex flex-col z-[45] transition-all duration-300 no-print shadow-xl md:shadow-none
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
       `}>
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between md:h-16">
           <span className="font-black text-xl tracking-tight uppercase">
             GMGP<span className="text-accent">.</span>
             <span className="text-xs font-normal text-gray-400 ml-2">Admin</span>
           </span>
-          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400">
-            <X size={20} />
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-black">
+            <X size={24} />
           </button>
         </div>
 
@@ -110,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 p-4 md:p-8 pt-24 md:pt-8 w-full max-w-full overflow-x-hidden">
+      <main className="flex-1 min-w-0 p-4 md:p-8 pt-6 md:pt-8 w-full max-w-full overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
           {children}
         </div>

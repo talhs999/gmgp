@@ -61,8 +61,9 @@ export default function AdminProductsPage() {
             ))}
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full min-w-[700px]">
+              <thead className="bg-gray-50 text-xs font-bold uppercase tracking-widest text-gray-400">
               <tr>
                 <th className="text-left px-6 py-3">Product</th>
                 <th className="text-left px-6 py-3">Category</th>
@@ -144,7 +145,8 @@ export default function AdminProductsPage() {
               ))}
             </tbody>
           </table>
-        )}
+        </div>
+      )}
       </div>
     </div>
   );
