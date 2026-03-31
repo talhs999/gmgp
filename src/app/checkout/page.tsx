@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { createOrder, AddressInput, getSiteSettings } from "@/lib/supabase-queries";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, AlertCircle } from "lucide-react";
 import { useCsrfToken } from "@/lib/csrf";
 
 const PERTH_SUBURBS = [
