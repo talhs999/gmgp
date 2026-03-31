@@ -72,19 +72,19 @@ function SuccessContent() {
   }
 
   return (
-    <div className="pt-10 pb-20 container-custom max-w-4xl mx-auto overflow-x-hidden">
-      <div className="text-center mb-8 md:mb-12 print:hidden px-4">
+    <div className="w-full max-w-4xl mx-auto overflow-x-hidden pt-4 pb-20">
+      <div className="text-center mb-8 md:mb-12 print:hidden px-4 w-full flex flex-col items-center">
         <div className="flex justify-center mb-4 md:mb-6">
           <div className="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center text-green-600">
             <CheckCircle size={32} className="md:w-12 md:h-12" />
           </div>
         </div>
-        <h1 className="text-2xl md:text-4xl font-black uppercase tracking-tight mb-2">Order Confirmed!</h1>
-        <p className="text-gray-500 text-sm md:text-lg">Your premium meat is being prepared.</p>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black uppercase tracking-tight mb-2 text-center w-full">Order Confirmed!</h1>
+        <p className="text-gray-500 text-xs md:text-lg text-center max-w-xs md:max-w-none">Our delivery partner will contact you shortly.</p>
       </div>
 
       {/* Professional Invoice Layout */}
-      <div className="printable-order-content bg-white p-4 md:p-12 rounded-2xl md:rounded-3xl border border-gray-100 shadow-xl md:shadow-2xl transition-all text-black mx-4">
+      <div className="printable-order-content bg-white p-4 md:p-12 rounded-2xl md:rounded-3xl border border-gray-100 shadow-xl md:shadow-2xl transition-all text-black mx-4 sm:mx-auto">
         {/* Print-Only Header */}
         <div className="hidden print:flex justify-between items-start border-b-2 border-black pb-8 mb-8">
           <div>

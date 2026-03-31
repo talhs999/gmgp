@@ -22,15 +22,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const { user, profile, isAdmin, loading } = useAuth();
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   useEffect(() => {
-    // Wait until loading finishes AND profile exists so we don't boot real admins too early
     if (!loading) {
       if (!user) {
         router.push("/login");
         return;
       }
-      if (profile) {
-        if (!isAdmin) router.push("/");
+      if (profile && !isAdmin) {
+        router.push("/");
       }
     }
   }, [user, isAdmin, loading, router, profile]);
@@ -46,23 +47,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-gray-50 pt-16">
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
+      {/* Mobile Toggle Button */}
+      <div className="md:hidden fixed top-20 left-4 z-50">
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-3 bg-black text-white rounded-full shadow-lg"
+          aria-label="Toggle Menu"
+        >
+          {sidebarOpen ? <X size={20} /> : <div className="flex flex-col gap-1 w-5"><div className="h-0.5 bg-white"></div><div className="h-0.5 bg-white w-3"></div><div className="h-0.5 bg-white"></div></div>}
+        </button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden animate-in fade-in"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 fixed left-0 top-16 bottom-0 bg-white border-r border-gray-200 flex flex-col overflow-y-auto z-40 no-print">
-        <div className="p-5 border-b border-gray-100">
+      <aside className={`
+        fixed md:sticky top-0 h-screen w-64 bg-white border-r border-gray-200 
+        flex flex-col z-[45] transition-transform duration-300 no-print
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+      `}>
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <span className="font-black text-xl tracking-tight uppercase">
             GMGP<span className="text-accent">.</span>
             <span className="text-xs font-normal text-gray-400 ml-2">Admin</span>
           </span>
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400">
+            <X size={20} />
+          </button>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {links.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
+                onClick={() => setSidebarOpen(false)}
                 className={`admin-sidebar-link ${active ? "active" : ""}`}
               >
                 <Icon size={18} />
@@ -74,16 +102,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="p-4 border-t border-gray-100">
-          <a href="/" className="admin-sidebar-link">
-            <LogOut size={18} />
-            Back to Store
-          </a>
+          <Link href="/" className="admin-sidebar-link group">
+            <LogOut size={18} className="group-hover:text-accent transition-colors" />
+            <span>Back to Store</span>
+          </Link>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
-        {children}
+      <main className="flex-1 min-w-0 p-4 md:p-8 pt-24 md:pt-8 w-full max-w-full overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
