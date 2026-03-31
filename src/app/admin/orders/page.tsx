@@ -226,7 +226,7 @@ export default function AdminOrdersPage() {
                                    <span>${((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-xs text-accent">
-                                   <span className="uppercase tracking-widest font-bold">Delivery Fee Paid</span>
+                                   <span className="uppercase tracking-widest font-bold">Delivery Fee</span>
                                    <span>${(Number(order.total) - ((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0)).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-2 border-t border-gray-200">
