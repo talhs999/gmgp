@@ -32,20 +32,20 @@ export default function Footer() {
     <footer className="bg-black text-white pt-16 pb-8">
       <div className="container-custom">
         {/* Newsletter */}
-        <div className="text-center mb-14 border-b border-white/10 pb-14">
-          <h3 className="section-title text-white mb-2">KEEP UP TO DATE</h3>
-          <p className="text-gray-400 text-sm mb-6">
+        <div className="text-center mb-10 md:mb-14 border-b border-white/10 pb-10 md:pb-14 px-4">
+          <h3 className="section-title text-white mb-2 text-xl md:text-3xl">KEEP UP TO DATE</h3>
+          <p className="text-gray-400 text-xs md:text-sm mb-6 max-w-sm mx-auto">
             Subscribe for weekly specials, new arrivals & exclusive deals
           </p>
-          <form className="flex gap-0 max-w-md mx-auto">
+          <form className="flex flex-col sm:flex-row gap-2 sm:gap-0 max-w-md mx-auto">
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-1 bg-white/10 border border-white/20 text-white placeholder-gray-500 px-4 py-3 text-sm focus:outline-none focus:border-accent"
+              className="flex-1 bg-white/10 border border-white/20 text-white placeholder-gray-500 px-4 py-3 text-sm focus:outline-none focus:border-accent rounded-sm sm:rounded-r-none"
             />
             <button
               type="submit"
-              className="bg-accent text-white px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-accent-dark transition-colors"
+              className="bg-accent text-white px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-accent-dark transition-colors rounded-sm sm:rounded-l-none"
             >
               Subscribe
             </button>

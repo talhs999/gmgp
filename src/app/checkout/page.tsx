@@ -115,7 +115,7 @@ export default function CheckoutPage() {
               <input type="hidden" name="_csrf" value={csrfToken} readOnly />
               
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4">Contact Information</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">First Name</label>
                   <input required type="text" name="firstName" value={form.firstName} onChange={handleChange}
@@ -126,12 +126,12 @@ export default function CheckoutPage() {
                   <input required type="text" name="lastName" value={form.lastName} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
-                <div className="col-span-2 md:col-span-1">
+                <div className="md:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Address (For Invoice)</label>
                   <input required type="email" name="email" value={form.email} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
                 </div>
-                <div className="col-span-2 md:col-span-1">
+                <div className="md:col-span-1">
                   <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Phone</label>
                   <input required type="tel" name="phone" value={form.phone} onChange={handleChange}
                     className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
@@ -168,31 +168,33 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2">
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Street Address</label>
-                  <input required type="text" name="address" value={form.address} onChange={handleChange}
-                    className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Suburb</label>
-                  {location === "perth" ? (
-                    <select required name="suburb" value={form.suburb} onChange={handleChange}
-                      className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black bg-white">
-                      <option value="">Select Perth Suburb</option>
-                      {PERTH_SUBURBS.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                  ) : (
-                    <input required type="text" name="suburb" value={form.suburb} onChange={handleChange}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="col-span-1">
+                    <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Street Address</label>
+                    <input required type="text" name="address" value={form.address} onChange={handleChange}
                       className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
-                  )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Suburb</label>
+                      {location === "perth" ? (
+                        <select required name="suburb" value={form.suburb} onChange={handleChange}
+                          className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black bg-white">
+                          <option value="">Select Perth Suburb</option>
+                          {PERTH_SUBURBS.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
+                      ) : (
+                        <input required type="text" name="suburb" value={form.suburb} onChange={handleChange}
+                          className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Postcode</label>
+                      <input required type="text" name="postcode" value={form.postcode} onChange={handleChange}
+                        className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Postcode</label>
-                  <input required type="text" name="postcode" value={form.postcode} onChange={handleChange}
-                    className="w-full border border-gray-200 p-3 rounded-lg focus:outline-none focus:border-black" />
-                </div>
-              </div>
 
               <h2 className="font-bold uppercase tracking-widest text-sm border-b pb-4 pt-4">Payment Method</h2>
               <div className="bg-gray-50 p-4 border border-gray-200 rounded-lg">

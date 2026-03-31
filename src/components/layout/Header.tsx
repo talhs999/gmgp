@@ -74,10 +74,21 @@ export default function Header() {
               ))}
             </div>
 
+            {/* Mobile Left: Menu */}
+            <div className="flex lg:hidden items-center">
+              <button
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className={`p-2 -ml-2 transition-colors ${isSolid ? "text-black" : "text-white"}`}
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              >
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+
             {/* Logo — Center */}
-            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+            <Link href="/" className="absolute left-1/2 -translate-x-1/2 z-10">
               <span
-                className={`font-black text-xl tracking-tight uppercase ${
+                className={`font-black text-xl md:text-2xl tracking-tight uppercase whitespace-nowrap ${
                   isSolid ? "text-black" : "text-white"
                 }`}
               >
@@ -85,7 +96,7 @@ export default function Header() {
               </span>
             </Link>
 
-            {/* Right Nav */}
+            {/* Right Nav (Desktop) */}
             <div className="hidden lg:flex items-center gap-6">
               {navLinks.slice(4).map((link) => (
                 <Link
@@ -120,29 +131,26 @@ export default function Header() {
               >
                 <ShoppingCart size={20} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center animate-bounce">
                     {itemCount}
                   </span>
                 )}
               </button>
             </div>
 
-            {/* Mobile Right */}
-            <div className="flex lg:hidden items-center gap-4">
-              <button onClick={openDrawer} className={`relative ${isSolid ? "text-black" : "text-white"}`} aria-label="Cart">
-                <ShoppingCart size={20} />
+            {/* Mobile Right: Cart */}
+            <div className="flex lg:hidden items-center">
+              <button 
+                onClick={openDrawer} 
+                className={`p-2 -mr-2 relative transition-colors ${isSolid ? "text-black" : "text-white"}`} 
+                aria-label="Cart"
+              >
+                <ShoppingCart size={22} />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  <span className="absolute top-1 right-1 bg-accent text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}
-              </button>
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className={isSolid ? "text-black" : "text-white"}
-                aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              >
-                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
           </div>

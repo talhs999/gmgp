@@ -27,12 +27,12 @@ export default function ProductTabs() {
       <div className="container-custom">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <h2 className="section-title">Shop Our Cuts</h2>
-          <div className="flex border border-gray-200 overflow-hidden rounded-sm">
+          <div className="flex border border-gray-200 overflow-x-auto scrollbar-hide whitespace-nowrap rounded-sm max-w-full">
             {TABS.map((tab, i) => (
               <button
                 key={tab.label}
                 onClick={() => setActiveTab(i)}
-                className={`px-5 py-2.5 text-xs font-bold uppercase tracking-wider border-r last:border-r-0 transition-colors border-gray-200
+                className={`px-5 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-wider border-r last:border-r-0 transition-colors border-gray-200 flex-shrink-0
                   ${activeTab === i ? "bg-black text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
                 {tab.label}
