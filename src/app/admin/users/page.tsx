@@ -1,48 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getAllProfiles, deleteProfile } from "@/lib/supabase-queries";
+import { getAllProfiles } from "@/lib/supabase-queries";
 import { Profile } from "@/lib/types";
-import { Users, Shield, User as UserIcon, Trash2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { toast } from "react-hot-toast";
+import { Users, Shield, User as UserIcon } from "lucide-react";
 
 export default function AdminUsersPage() {
-  const { user } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    loadProfiles();
+    getAllProfiles().then((data) => { setProfiles(data); setLoading(false); });
   }, []);
-
-  const loadProfiles = async () => {
-    setLoading(true);
-    const data = await getAllProfiles();
-    setProfiles(data);
-    setLoading(false);
-  };
-
-  const handleDelete = async (id: string, name: string) => {
-    if (id === user?.id) {
-       toast.error("You cannot delete your own admin account!");
-       return;
-    }
-    
-    if (!confirm(`Are you sure you want to delete ${name || 'this user'}? This action cannot be undone.`)) {
-      return;
-    }
-
-    setDeletingId(id);
-    const success = await deleteProfile(id);
-    if (success) {
-      toast.success("User deleted successfully");
-      setProfiles(profiles.filter(p => p.id !== id));
-    } else {
-      toast.error("Failed to delete user");
-    }
-    setDeletingId(null);
-  };
 
   return (
     <div>
