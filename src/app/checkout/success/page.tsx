@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { CheckCircle, Download, ArrowLeft, Star, Send, Printer } from "lucide-react";
+import { CheckCircle, Download, ArrowLeft, Star, Send, Printer, Ticket } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { saveOrderRating, getOrderById } from "@/lib/supabase-queries";
 import { useState, useEffect, useMemo } from "react";
@@ -35,11 +35,12 @@ function SuccessContent() {
   }, [orderId]);
 
   // Dynamic Math logic
-  const { subtotal, deliveryFee } = useMemo(() => {
-    if (!order || !order.order_items) return { subtotal: 0, deliveryFee: 0 };
+  const { subtotal, deliveryFee, discountAmount } = useMemo(() => {
+    if (!order || !order.order_items) return { subtotal: 0, deliveryFee: 0, discountAmount: 0 };
     const st = order.order_items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
-    const fee = order.total - st;
-    return { subtotal: st, deliveryFee: Math.max(0, fee) };
+    const disc = Number(order.discount_amount ?? 0);
+    const fee = order.total - st + disc;
+    return { subtotal: st, deliveryFee: Math.max(0, fee), discountAmount: disc };
   }, [order]);
 
   const handleRatingSubmit = async () => {
@@ -173,6 +174,15 @@ function SuccessContent() {
               <span className="text-gray-500 font-medium uppercase tracking-widest text-[10px]">Subtotal:</span>
               <span className="font-bold text-right">${subtotal.toFixed(2)}</span>
             </div>
+            {order?.coupon_code && discountAmount > 0 && (
+              <div className="flex justify-between text-sm items-center bg-green-50 px-3 py-2 rounded-lg border border-green-100">
+                <div className="flex items-center gap-1.5 text-green-700">
+                  <Ticket size={12} />
+                  <span className="font-black uppercase tracking-widest text-[10px]">Discount ({order.coupon_code}):</span>
+                </div>
+                <span className="font-bold text-green-700 text-right">- ${discountAmount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-sm items-center">
               <span className="text-gray-500 font-medium uppercase tracking-widest text-[10px]">Delivery Fee:</span>
               <span className="font-bold text-right">${deliveryFee.toFixed(2)}</span>
