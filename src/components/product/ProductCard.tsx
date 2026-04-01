@@ -41,7 +41,11 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     setAdding(true);
-    addItem(product);
+    // Use the first weight option as default if available
+    const defaultWeight = product.weight_options && product.weight_options.length > 0 
+      ? product.weight_options[0] 
+      : undefined;
+    addItem(product, 1, defaultWeight);
     setTimeout(() => setAdding(false), 800);
   };
 
@@ -49,15 +53,18 @@ export default function ProductCard({ product }: ProductCardProps) {
     ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
     : 0;
 
+  const hasWeights = product.weight_options && product.weight_options.length > 0;
+  const displayPrice = hasWeights ? product.weight_options![0].price : product.price;
+
   return (
-    <Link href={`/products/${product.slug}`} className="product-card block">
+    <Link href={`/products/${product.slug}`} className="product-card block group">
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         <Image
           src={imgSrc}
           alt={product.name}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-105 transition-transform duration-500 shadow-inner"
           sizes="(max-width: 768px) 50vw, 33vw"
           onError={() => setImgSrc(fallbackSrc)}
           unoptimized={!imgSrc.includes("unsplash.com") && !imgSrc.includes("supabase.co")}
@@ -81,21 +88,21 @@ export default function ProductCard({ product }: ProductCardProps) {
           {!product.in_stock && (
             <span className="badge-grey">Sold Out</span>
           )}
-          {discount > 0 && (
+          {discount > 0 && !hasWeights && (
             <span className="badge-red">-{discount}%</span>
           )}
         </div>
 
         {/* Hover Overlay */}
         <div className="product-card-overlay gap-2">
-          <button aria-label={`Quick view ${product.name}`} className="bg-white text-black p-3 rounded-full hover:bg-accent hover:text-white transition-colors shadow-lg">
+          <button aria-label={`Quick view ${product.name}`} className="bg-white text-black p-3 rounded-full hover:bg-black hover:text-white transition-colors shadow-lg">
             <Eye size={18} />
           </button>
           <button
             onClick={handleAddToCart}
             disabled={!product.in_stock}
             aria-label={`Add ${product.name} to cart`}
-            className="bg-accent text-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider hover:bg-accent-dark transition-colors disabled:bg-gray-400 shadow-lg flex items-center gap-2"
+            className="bg-black text-white px-4 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:bg-gray-400 shadow-lg flex items-center gap-2"
           >
             <ShoppingCart size={14} />
             {adding ? "Added!" : product.in_stock ? "Add to Cart" : "Sold Out"}
@@ -104,25 +111,36 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
 
       {/* Info */}
-      <div className="p-4">
-        <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-widest mb-1">
+      <div className="p-4 bg-white">
+        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1.5 flex items-center gap-2">
           {product.category?.name || "Premium Meat"}
+          {hasWeights && <span className="h-1 w-1 rounded-full bg-gray-300"></span>}
+          {hasWeights && <span>{product.weight_options?.length} Sizes</span>}
         </p>
-        <h3 className="font-bold text-sm leading-tight line-clamp-2 mb-2 group-hover:text-accent transition-colors">
+        <h3 className="font-bold text-sm leading-tight line-clamp-2 mb-2 group-hover:text-accent transition-colors min-h-[2.5rem]">
           {product.name}
         </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-black">
-            A${product.price.toFixed(2)}
-          </span>
-          {product.compare_at_price && (
-            <span className="text-sm font-bold text-gray-400 line-through">
-              A${product.compare_at_price.toFixed(2)}
+        
+        <div className="flex flex-col gap-0.5">
+          {hasWeights && (
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              From
             </span>
           )}
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-black text-black">
+              ${displayPrice.toFixed(2)}
+            </span>
+            {product.compare_at_price && !hasWeights && (
+              <span className="text-xs font-bold text-gray-400 line-through">
+                ${product.compare_at_price.toFixed(2)}
+              </span>
+            )}
+          </div>
         </div>
+
         {/* Mini star rating — decorative */}
-        <div className="flex items-center gap-0.5 mt-1.5">
+        <div className="flex items-center gap-0.5 mt-3">
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={10} className="fill-yellow-400 text-yellow-400" />
           ))}

@@ -157,8 +157,23 @@ export default function EditProductPage({ params }: Props) {
         {/* Media Upload */}
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm space-y-8">
           <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-4">Product Images</h2>
-          <ImageUpload label="Main Product Image" value={form.imageUrl} onChange={(url) => setForm(f => ({ ...f, imageUrl: url }))} />
-          <GalleryUpload value={galleryImages} onChange={setGalleryImages} />
+          <ImageUpload 
+            label="Main Product Image" 
+            value={form.imageUrl} 
+            onChange={(url) => setForm(f => ({ ...f, imageUrl: url }))}
+            onAddToGallery={(url) => {
+              if (!galleryImages.includes(url)) {
+                setGalleryImages([...galleryImages, url]);
+              }
+            }}
+          />
+          <GalleryUpload 
+            value={galleryImages} 
+            onChange={setGalleryImages} 
+            onSetAsMain={(url) => {
+              setForm(f => ({ ...f, imageUrl: url }));
+            }}
+          />
         </div>
 
         {/* Product Profile Sliders */}

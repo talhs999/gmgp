@@ -145,18 +145,17 @@ export default function ProductDetailPage({ params }: Props) {
               {/* Weight Options */}
               {product.weight_options && product.weight_options.length > 0 && (
                 <div className="mb-8">
-                  <p className="text-xs font-bold uppercase tracking-widest mb-3">Size / Weight</p>
+                  <p className="text-xs font-black uppercase tracking-widest mb-3">Size / Weight</p>
                   <div className="flex gap-2 flex-wrap">
                     {product.weight_options.map((w: WeightOption) => (
                       <button
                         key={w.label}
                         onClick={() => setSelectedWeight(w)}
-                        className="border px-4 py-2 text-sm font-semibold transition-all"
-                        style={{
-                          borderColor: selectedWeight?.label === w.label ? "#000" : "#d1d5db",
-                          background: selectedWeight?.label === w.label ? "#000" : "#fff",
-                          color: selectedWeight?.label === w.label ? "#fff" : "#000",
-                        }}
+                        className={`border-2 px-6 py-2.5 text-sm font-bold uppercase tracking-tight transition-all duration-200 ${
+                          selectedWeight?.label === w.label 
+                          ? "bg-black border-black text-white shadow-lg shadow-black/10 scale-[1.02]" 
+                          : "bg-white border-gray-100 text-black hover:border-black/20"
+                        }`}
                       >
                         {w.label} — ${w.price.toFixed(2)}
                       </button>
