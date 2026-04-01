@@ -2,7 +2,7 @@
 import { useEffect, useState, Fragment } from "react";
 import { getAllOrders, updateOrderStatus, deleteOrder } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
-import { ShoppingBag, ChevronDown, Trash2, AlertTriangle } from "lucide-react";
+import { ShoppingBag, ChevronDown, Trash2, AlertTriangle, Ticket } from "lucide-react";
 
 const STATUS_OPTIONS: Order["status"][] = ["pending", "confirmed", "preparing", "delivered", "cancelled"];
 
@@ -172,16 +172,27 @@ export default function AdminOrdersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm font-bold text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-4">
-                          <span className="text-lg">${Number(order.total).toFixed(2)}</span>
-                          <button
-                            onClick={() => handleDeleteOrder(order.id)}
-                            disabled={updating === order.id}
-                            className="text-gray-300 hover:text-red-600 transition-colors disabled:opacity-50"
-                            title="Delete Order"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <div className="flex items-center gap-4">
+                            <span className="text-lg">${Number(order.total).toFixed(2)}</span>
+                            <button
+                              onClick={() => handleDeleteOrder(order.id)}
+                              disabled={updating === order.id}
+                              className="text-gray-300 hover:text-red-600 transition-colors disabled:opacity-50"
+                              title="Delete Order"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          {order.coupon_code && (
+                            <div className="flex items-center gap-1 bg-green-50 border border-green-200 text-green-700 px-2 py-0.5 rounded-full">
+                              <Ticket size={10} />
+                              <span className="text-[9px] font-black uppercase tracking-widest">{order.coupon_code}</span>
+                              {order.discount_amount && order.discount_amount > 0 && (
+                                <span className="text-[9px] font-bold">-${Number(order.discount_amount).toFixed(2)}</span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -260,9 +271,18 @@ export default function AdminOrdersPage() {
                                    <span className="uppercase tracking-widest font-bold">Items Total</span>
                                    <span>${((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0).toFixed(2)}</span>
                                 </div>
+                                {order.coupon_code && (
+                                  <div className="flex justify-between items-center text-xs text-green-700 bg-green-50 px-3 py-2 rounded-lg border border-green-100">
+                                    <div className="flex items-center gap-1.5">
+                                      <Ticket size={12} />
+                                      <span className="uppercase tracking-widest font-black">Coupon: {order.coupon_code}</span>
+                                    </div>
+                                    <span className="font-black">- ${Number(order.discount_amount ?? 0).toFixed(2)}</span>
+                                  </div>
+                                )}
                                 <div className="flex justify-between items-center text-xs text-accent">
                                    <span className="uppercase tracking-widest font-bold">Delivery Fee</span>
-                                   <span>${(Number(order.total) - ((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0)).toFixed(2)}</span>
+                                   <span>${(Number(order.total) - ((order.order_items as any[])?.reduce((acc, item) => acc + (item.unit_price * item.quantity), 0) ?? 0) + Number(order.discount_amount ?? 0)).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                                   <span className="font-bold text-gray-400 uppercase tracking-widest text-[10px]">Order Grand Total</span>
