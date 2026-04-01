@@ -178,7 +178,7 @@ function SuccessContent() {
               <div className="flex justify-between text-sm items-center bg-green-50 px-3 py-2 rounded-lg border border-green-100">
                 <div className="flex items-center gap-1.5 text-green-700">
                   <Ticket size={12} />
-                  <span className="font-black uppercase tracking-widest text-[10px]">Discount ({order.coupon_code}):</span>
+                  <span className="font-black uppercase tracking-widest text-[10px]">Coupon Applied:</span>
                 </div>
                 <span className="font-bold text-green-700 text-right">- ${discountAmount.toFixed(2)}</span>
               </div>

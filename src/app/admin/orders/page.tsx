@@ -275,7 +275,7 @@ export default function AdminOrdersPage() {
                                   <div className="flex justify-between items-center text-xs text-green-700 bg-green-50 px-3 py-2 rounded-lg border border-green-100">
                                     <div className="flex items-center gap-1.5">
                                       <Ticket size={12} />
-                                      <span className="uppercase tracking-widest font-black">Coupon: {order.coupon_code}</span>
+                                      <span className="uppercase tracking-widest font-black">Coupon Applied</span>
                                     </div>
                                     <span className="font-black">- ${Number(order.discount_amount ?? 0).toFixed(2)}</span>
                                   </div>
