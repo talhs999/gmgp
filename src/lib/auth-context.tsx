@@ -11,6 +11,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   loading: true,
   isAdmin: false,
+  isSuperAdmin: false,
   signOut: async () => {},
   refreshProfile: async () => {},
 });
@@ -33,6 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     const p = await getProfile(userId);
+    if (p?.deleted_at) {
+      await supabase.auth.signOut();
+      setProfile(null);
+      setUser(null);
+      return;
+    }
     setProfile(p);
   };
 
@@ -70,7 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user, session, profile, loading,
-      isAdmin: profile?.is_admin ?? false,
+      isAdmin: profile?.role === 'admin' || profile?.role === 'super_admin' || (profile?.is_admin ?? false),
+      isSuperAdmin: profile?.role === 'super_admin',
       signOut, refreshProfile,
     }}>
       {children}

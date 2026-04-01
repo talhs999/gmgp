@@ -8,21 +8,26 @@ import {
 import { useAuth } from "@/lib/auth-context";
 
 const links = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/admin/categories", label: "Categories", icon: Tag },
-  { href: "/admin/settings", label: "Shipping", icon: Truck },
-  { href: "/admin/reviews", label: "Reviews", icon: ShoppingBag },
-  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, slug: "dashboard" },
+  { href: "/admin/products", label: "Products", icon: Package, slug: "products" },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingBag, slug: "orders" },
+  { href: "/admin/categories", label: "Categories", icon: Tag, slug: "categories" },
+  { href: "/admin/settings", label: "Shipping", icon: Truck, slug: "settings" },
+  { href: "/admin/reviews", label: "Reviews", icon: ShoppingBag, slug: "reviews" },
+  { href: "/admin/users", label: "Users", icon: Users, slug: "users" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, profile, isAdmin, loading } = useAuth();
+  const { user, profile, isAdmin, isSuperAdmin, loading } = useAuth();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Filter links for regular admins (Super Admins see everything)
+  const allowedLinks = isSuperAdmin 
+    ? links 
+    : links.filter(link => profile?.allowed_tabs?.includes(link.slug) || link.slug === "dashboard");
 
   useEffect(() => {
     if (!loading) {
@@ -32,9 +37,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
       if (profile && !isAdmin) {
         router.push("/");
+        return;
+      }
+
+      // Check if current page is allowed for regular admin
+      if (!isSuperAdmin && profile?.role === 'admin') {
+        const currentLink = links.find(l => l.href === pathname);
+        if (currentLink && currentLink.slug !== "dashboard" && !profile.allowed_tabs?.includes(currentLink.slug)) {
+          router.push("/admin"); // Redirect to dashboard if trying to access restricted tab
+        }
       }
     }
-  }, [user, isAdmin, loading, router, profile]);
+  }, [user, isAdmin, isSuperAdmin, loading, router, profile, pathname]);
 
   if (loading) {
     return (
@@ -89,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {links.map(({ href, label, icon: Icon }) => {
+          {allowedLinks.map(({ href, label, icon: Icon }) => {
             const active = pathname === href;
             return (
               <Link

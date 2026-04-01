@@ -266,6 +266,33 @@ export async function deleteProfile(id: string): Promise<boolean> {
   return true;
 }
 
+export async function softDeleteProfile(id: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("profiles")
+    .update({ deleted_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) { console.error("softDeleteProfile:", error); return false; }
+  return true;
+}
+
+export async function updateUserRole(id: string, role: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("profiles")
+    .update({ role, is_admin: role === 'admin' || role === 'super_admin' })
+    .eq("id", id);
+  if (error) { console.error("updateUserRole:", error); return false; }
+  return true;
+}
+
+export async function updateAllowedTabs(id: string, tabs: string[]): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("profiles")
+    .update({ allowed_tabs: tabs })
+    .eq("id", id);
+  if (error) { console.error("updateAllowedTabs:", error); return false; }
+  return true;
+}
+
 // ─── ADMIN STATS ─────────────────────────────────────────────
 
 export async function getAdminStats() {

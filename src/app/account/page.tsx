@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getUserOrders, updateProfile, cancelOrder, deleteOrder } from "@/lib/supabase-queries";
+import { getUserOrders, updateProfile, cancelOrder, deleteOrder, softDeleteProfile } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
 import Link from "next/link";
 import { Package, User as UserIcon, LogOut, Heart, CheckCircle, XCircle, Trash2 } from "lucide-react";
@@ -214,6 +214,22 @@ export default function AccountPage() {
                   </button>
                   {saveSuccess && <span className="flex items-center gap-1 text-green-600 text-sm font-bold"><CheckCircle size={14} /> Saved!</span>}
                 </div>
+              </div>
+
+              {/* Danger Zone */}
+              <div className="mt-12 pt-8 border-t border-gray-100">
+                <h3 className="text-sm font-black uppercase tracking-tight text-red-600 mb-2">Danger Zone</h3>
+                <p className="text-gray-500 text-xs mb-4">Permanently deactivate your account. This action cannot be undone, but will be reflected in the admin records.</p>
+                <button 
+                  onClick={() => {
+                    if (window.confirm("ARE YOU ABSOLUTELY SURE? Your account will be deactivated and you will be signed out permanently.")) {
+                      softDeleteProfile(user.id).then(() => signOut());
+                    }
+                  }}
+                  className="px-4 py-2 border border-red-200 text-red-600 text-xs font-black uppercase tracking-widest rounded-lg hover:bg-red-50 transition-all"
+                >
+                  Delete My Account
+                </button>
               </div>
             </div>
           </div>

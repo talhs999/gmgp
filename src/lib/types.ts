@@ -79,6 +79,9 @@ export interface Profile {
   postcode: string | null;
   is_member: boolean;
   is_admin: boolean;
+  role: "super_admin" | "admin" | "customer";
+  allowed_tabs: string[];
+  deleted_at: string | null;
   referral_code: string | null;
   created_at: string;
 }
