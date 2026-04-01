@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { createOrder, AddressInput, getSiteSettings } from "@/lib/supabase-queries";
+import { createOrder, AddressInput, getSiteSettings, validateCoupon } from "@/lib/supabase-queries";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import { useCsrfToken } from "@/lib/csrf";
 
@@ -32,11 +32,31 @@ export default function CheckoutPage() {
     getSiteSettings().then(s => { if (s) setSettings(s); });
   }, []);
 
-  // New Location state
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number} | null>(null);
+  const [couponError, setCouponError] = useState("");
+
+  // Location state
   const [location, setLocation] = useState("perth"); // "perth" or "outside"
-  
+
   const subtotal = getTotal();
-  const shippingFee = subtotal >= settings.free_threshold ? 0 : (location === "perth" ? settings.perth_fee : settings.outside_fee);
+  const discount = appliedCoupon?.discount || 0;
+  const shippingFee = (subtotal - discount) >= settings.free_threshold ? 0 : (location === "perth" ? settings.perth_fee : settings.outside_fee);
+  const total = (subtotal - discount) + shippingFee;
+
+  const handleApplyCoupon = async () => {
+    setCouponError("");
+    if (!couponCode.trim()) return;
+    
+    const result = await validateCoupon(couponCode, subtotal);
+    if (result.valid) {
+      setAppliedCoupon({ code: couponCode.toUpperCase(), discount: result.discount! });
+      setCouponCode("");
+    } else {
+      setCouponError(result.message || "Invalid coupon.");
+    }
+  };
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "",
@@ -68,9 +88,14 @@ export default function CheckoutPage() {
       weight_option: item.weight_option?.label ?? null,
     }));
 
-    const total = getTotal() + shippingFee;
-
-    const order = await createOrder(user?.id || null, total, orderItems, address);
+    const order = await createOrder(
+      user?.id || null, 
+      total, 
+      orderItems, 
+      address, 
+      discount, 
+      appliedCoupon?.code || null
+    );
     
     if (order) {
       clearCart();
@@ -150,13 +175,13 @@ export default function CheckoutPage() {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input type="radio" name="location" value="perth" checked={location === "perth"} onChange={() => setLocation("perth")} className="w-4 h-4 text-black focus:ring-black" />
                     <span className="text-sm">
-                      Within Perth (Delivery: {subtotal >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.perth_fee} AUD`})
+                      Within Perth (Delivery: {(subtotal - discount) >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.perth_fee} AUD`})
                     </span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input type="radio" name="location" value="outside" checked={location === "outside"} onChange={() => setLocation("outside")} className="w-4 h-4 text-black focus:ring-black" />
                     <span className="text-sm">
-                      Outside Perth (Delivery: {subtotal >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.outside_fee} AUD`})
+                      Outside Perth (Delivery: {(subtotal - discount) >= settings.free_threshold ? <span className="text-green-600 font-bold">FREE</span> : `$${settings.outside_fee} AUD`})
                     </span>
                   </label>
                 </div>
@@ -265,18 +290,56 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Coupon Section */}
+              <div className="mt-8 border-t pt-6">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">Have a Coupon?</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder="Enter code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className="flex-1 border border-gray-200 p-3 rounded-xl focus:outline-none focus:border-black text-sm font-bold"
+                  />
+                  <button 
+                    type="button" 
+                    onClick={handleApplyCoupon}
+                    className="bg-black text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {couponError && <p className="text-[10px] text-red-500 font-bold mt-2">{couponError}</p>}
+                {appliedCoupon && (
+                  <div className="mt-3 flex items-center justify-between bg-green-50 px-3 py-2 rounded-lg border border-green-100">
+                    <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">
+                      Applied: {appliedCoupon.code}
+                    </span>
+                    <button onClick={() => setAppliedCoupon(null)} className="text-green-700 hover:text-red-500 transition-colors">
+                      <span className="text-xs">✕</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="border-t mt-6 pt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-gray-500">
                   <span>Subtotal</span>
-                  <span>AUD ${getTotal().toFixed(2)}</span>
+                  <span>AUD ${subtotal.toFixed(2)}</span>
                 </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-green-600 font-bold">
+                    <span>Discount ({appliedCoupon.code})</span>
+                    <span>- AUD ${discount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-gray-500">
                   <span>Shipping ({location === "perth" ? "Within Perth" : "Outside Perth"})</span>
                   <span>AUD ${shippingFee.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between font-black text-lg pt-2 border-t mt-2">
                   <span>Total</span>
-                  <span className="text-accent">AUD ${(getTotal() + shippingFee).toFixed(2)}</span>
+                  <span className="text-accent">AUD ${total.toFixed(2)}</span>
                 </div>
               </div>
 

@@ -56,6 +56,21 @@ export interface Order {
   cancellation_reason?: string | null;
   rating?: number | null;
   rating_comment?: string | null;
+  discount_amount?: number;
+  coupon_code?: string | null;
+}
+
+export interface Coupon {
+  id: string;
+  code: string;
+  discount_type: "percentage" | "fixed";
+  discount_value: number;
+  min_order_amount: number;
+  max_uses: number | null;
+  used_count: number;
+  expires_at: string | null;
+  is_active: boolean;
+  created_at: string;
 }
 
 export interface OrderItem {

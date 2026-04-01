@@ -9,6 +9,7 @@ const ADMIN_TABS = [
   { id: "products", label: "Products" },
   { id: "orders", label: "Orders" },
   { id: "categories", label: "Categories" },
+  { id: "coupons", label: "Coupons" },
   { id: "settings", label: "Shipping" },
   { id: "reviews", label: "Reviews" },
   { id: "users", label: "Users" },

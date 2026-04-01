@@ -1,6 +1,6 @@
 "use server";
 import { supabase, supabaseAdmin } from "./supabase";
-import { Product, Category, Order, Profile, SiteSettings, ProductReview } from "./types";
+import { Product, Category, Order, Profile, SiteSettings, ProductReview, Coupon } from "./types";
 import { sendOrderConfirmationEmail, sendOrderCancellationEmail } from "./email-service";
 
 // ─── PRODUCTS ────────────────────────────────────────────────
@@ -137,7 +137,9 @@ export async function createOrder(
   userId: string | null,
   total: number,
   items: OrderItemInput[],
-  address: AddressInput
+  address: AddressInput,
+  discount_amount: number = 0,
+  coupon_code: string | null = null
 ): Promise<Order | null> {
   const { data: order, error: orderError } = await supabaseAdmin().from("orders")
     .insert({
@@ -145,6 +147,8 @@ export async function createOrder(
       total,
       address_snapshot: address,
       status: "pending",
+      discount_amount,
+      coupon_code,
     })
     .select()
     .single();
@@ -163,6 +167,11 @@ export async function createOrder(
   if (itemsError) {
     console.error("createOrderItems:", itemsError);
     return null;
+  }
+
+  // If coupon was used, increment usage
+  if (coupon_code) {
+    await supabaseAdmin().rpc('increment_coupon_usage', { p_code: coupon_code });
   }
 
   // Send Confirmation Email
@@ -523,4 +532,71 @@ export async function deleteOrderFeedback(orderId: string): Promise<boolean> {
     .eq("id", orderId);
   if (error) { console.error("deleteOrderFeedback:", error); return false; }
   return true;
+}
+
+// ─── COUPONS ─────────────────────────────────────────────────
+
+export async function getCoupons(): Promise<Coupon[]> {
+  const { data, error } = await supabaseAdmin()
+    .from("coupons")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) { console.error("getCoupons:", error); return []; }
+  return (data as Coupon[]) ?? [];
+}
+
+export async function createCoupon(coupon: Omit<Coupon, "id" | "used_count" | "created_at">): Promise<Coupon | null> {
+  const { data, error } = await supabaseAdmin()
+    .from("coupons")
+    .insert(coupon)
+    .select()
+    .single();
+  if (error) { console.error("createCoupon:", error); return null; }
+  return data as Coupon;
+}
+
+export async function deleteCoupon(id: string): Promise<boolean> {
+  const { error } = await supabaseAdmin()
+    .from("coupons")
+    .delete()
+    .eq("id", id);
+  if (error) { console.error("deleteCoupon:", error); return false; }
+  return true;
+}
+
+export async function validateCoupon(code: string, subtotal: number): Promise<{ valid: boolean, discount?: number, message?: string }> {
+  const { data: coupon, error } = await supabaseAdmin()
+    .from("coupons")
+    .select("*")
+    .eq("code", code.toUpperCase())
+    .eq("is_active", true)
+    .single();
+
+  if (error || !coupon) {
+    return { valid: false, message: "Invalid coupon code." };
+  }
+
+  // Check expiration
+  if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
+    return { valid: false, message: "This coupon has expired." };
+  }
+
+  // Check usage limit
+  if (coupon.max_uses && coupon.used_count >= coupon.max_uses) {
+    return { valid: false, message: "This coupon has reached its usage limit." };
+  }
+
+  // Check minimum spend
+  if (subtotal < coupon.min_order_amount) {
+    return { valid: false, message: `Minimum spend of $${coupon.min_order_amount} required.` };
+  }
+
+  let discount = 0;
+  if (coupon.discount_type === "percentage") {
+    discount = (subtotal * coupon.discount_value) / 100;
+  } else {
+    discount = coupon.discount_value;
+  }
+
+  return { valid: true, discount };
 }

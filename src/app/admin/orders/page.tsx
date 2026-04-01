@@ -2,7 +2,7 @@
 import { useEffect, useState, Fragment } from "react";
 import { getAllOrders, updateOrderStatus, deleteOrder } from "@/lib/supabase-queries";
 import { Order } from "@/lib/types";
-import { ShoppingBag, ChevronDown, Trash2 } from "lucide-react";
+import { ShoppingBag, ChevronDown, Trash2, AlertTriangle } from "lucide-react";
 
 const STATUS_OPTIONS: Order["status"][] = ["pending", "confirmed", "preparing", "delivered", "cancelled"];
 
@@ -19,6 +19,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [view, setView] = useState<'active' | 'cancelled'>('active');
 
   useEffect(() => {
     getAllOrders().then((data) => { setOrders(data); setLoading(false); });
@@ -45,11 +46,30 @@ export default function AdminOrdersPage() {
     setUpdating(null);
   };
 
+  const filteredOrders = orders.filter(o => view === 'active' ? o.status !== 'cancelled' : o.status === 'cancelled');
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-black uppercase tracking-tight">Orders</h1>
-        <p className="text-gray-500 text-sm mt-1">{orders.length} total orders</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black uppercase tracking-tight">Orders</h1>
+          <p className="text-gray-500 text-sm mt-1">{filteredOrders.length} {view} orders</p>
+        </div>
+
+        <div className="flex bg-white rounded-xl p-1 shadow-sm border border-gray-100 w-fit">
+          <button 
+            onClick={() => setView('active')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${view === 'active' ? "bg-black text-white" : "text-gray-500 hover:text-black"}`}
+          >
+            Active Orders
+          </button>
+          <button 
+            onClick={() => setView('cancelled')}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${view === 'cancelled' ? "bg-red-600 text-white" : "text-gray-500 hover:text-red-600"}`}
+          >
+            Cancelled Orders
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -78,7 +98,7 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {orders.map((order) => {
+              {filteredOrders.map((order) => {
                 const isExpanded = expandedRow === order.id;
                 const customerName = order.profile?.full_name || order.address_snapshot?.full_name || "Guest";
                 const customerEmail = order.address_snapshot?.email || "No Email";
@@ -172,6 +192,21 @@ export default function AdminOrdersPage() {
                         <td colSpan={6} className="px-6 py-8">
                           <div className="printable-order-content grid md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-top-2 duration-200 p-8 bg-white rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
                             
+                            {/* Cancellation Notice (NEW) */}
+                            {order.status === "cancelled" && (
+                              <div className="col-span-2 bg-red-50 border border-red-100 p-6 rounded-xl mb-2 flex items-start gap-4">
+                                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                                  <AlertTriangle className="text-red-600" size={20} />
+                                </div>
+                                <div>
+                                  <h4 className="text-sm font-black uppercase tracking-tight text-red-700">Order Cancelled</h4>
+                                  <p className="text-sm text-red-600/80 mt-1">
+                                    <span className="font-bold">Reason:</span> {order.cancellation_reason || "No reason provided."}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+
                             {/* PRINT-ONLY HEADER - Visible only when printing */}
                             <div className="hidden print:flex justify-between items-start mb-10 w-full col-span-2 border-b-2 border-black pb-6">
                               <div>
