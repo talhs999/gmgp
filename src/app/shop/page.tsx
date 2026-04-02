@@ -44,10 +44,6 @@ function ShopContent() {
       const q = search.toLowerCase();
       list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.tags && p.tags.some((t) => t.includes(q))));
     }
-    if (activeCategory !== "all") {
-      list = list.filter((p) => p.category_id === activeCategory);
-    }
-
     // Special Tag Filter
     if (activeCategory === "special") {
       list = list.filter((p) => p.is_special);
