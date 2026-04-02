@@ -28,11 +28,13 @@ function ShopContent() {
       if (categorySlug) {
         const found = cats.find(c => c.slug === categorySlug);
         if (found) setActiveCategory(found.id);
+      } else if (activeTag === "special") {
+        setActiveCategory("special");
       }
       
       setLoading(false);
     });
-  }, [categorySlug]);
+  }, [categorySlug, activeTag]);
 
   const filtered = useMemo(() => {
     let list = [...products];
@@ -47,21 +49,23 @@ function ShopContent() {
     }
 
     // Special Tag Filter
-    if (activeTag === "special") {
+    if (activeCategory === "special") {
       list = list.filter((p) => p.is_special);
+    } else if (activeCategory !== "all") {
+      list = list.filter((p) => p.category_id === activeCategory);
     }
-    
+
     // Sort logic
     if (sortBy === "price-asc") list.sort((a, b) => a.price - b.price);
     else if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
     else if (sortBy === "newest") list.sort((a, b) => (a.badge === "NEW" ? -1 : 1));
-    else if (activeTag !== "special") {
+    else if (activeCategory !== "special") {
       // Default: Specials first
       list.sort((a, b) => (a.is_special === b.is_special ? 0 : a.is_special ? -1 : 1));
     }
     
     return list;
-  }, [search, activeCategory, sortBy, products, activeTag]);
+  }, [search, activeCategory, sortBy, products]);
 
   return (
     <div>
@@ -77,7 +81,7 @@ function ShopContent() {
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 text-center text-white">
           <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">
-            {activeTag === "special" ? "Today's Special" : "Our Cuts"}
+            {activeCategory === "special" ? "Today's Special" : "Our Cuts"}
           </h1>
           <p className="text-white/70 mt-2 text-sm">
             {loading ? "Loading..." : `${products.length} premium products available`}
@@ -134,6 +138,16 @@ function ShopContent() {
           >
             All ({products.length})
           </button>
+          
+          <button
+            onClick={() => setActiveCategory("special")}
+            className={`px-4 py-2 text-xs font-bold uppercase tracking-wider border transition-colors ${
+              activeCategory === "special" ? "bg-black text-white border-black" : "border-gray-300 hover:border-black"
+            }`}
+          >
+            Today's Special ({products.filter(p => p.is_special).length})
+          </button>
+
           {categories.map((cat) => {
             const count = products.filter((p) => p.category_id === cat.id).length;
             return (
@@ -153,7 +167,7 @@ function ShopContent() {
         {/* Results count */}
         <p className="text-sm text-gray-500 mb-4">
           Showing <strong>{filtered.length}</strong> products
-          {activeCategory !== "all" && ` in ${categories.find((c) => c.id === activeCategory)?.name}`}
+          {activeCategory === "special" ? " in Today's Special" : activeCategory !== "all" ? ` in ${categories.find((c) => c.id === activeCategory)?.name}` : ""}
         </p>
 
         {/* Product Grid */}

@@ -23,6 +23,18 @@ export default function Header() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMegaEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setMegaOpen(true);
+  };
+
+  const handleMegaLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setMegaOpen(false);
+    }, 300);
+  };
   const itemCount = useCartStore((s) => s.getItemCount());
   const openDrawer = useCartStore((s) => s.openDrawer);
   const megaRef = useRef<HTMLDivElement>(null);
@@ -53,8 +65,8 @@ export default function Header() {
                 <div key={link.label} className="relative" ref={link.hasMega ? megaRef : undefined}>
                   {link.hasMega ? (
                     <button
-                      onMouseEnter={() => setMegaOpen(true)}
-                      onMouseLeave={() => setMegaOpen(false)}
+                      onMouseEnter={handleMegaEnter}
+                      onMouseLeave={handleMegaLeave}
                       className={`flex items-center gap-1 text-xs font-semibold uppercase tracking-widest
                         hover:text-accent transition-colors ${isSolid ? "text-black" : "text-white"}`}
                     >
@@ -159,8 +171,8 @@ export default function Header() {
         {/* Mega Menu */}
         {megaOpen && (
           <div
-            onMouseEnter={() => setMegaOpen(true)}
-            onMouseLeave={() => setMegaOpen(false)}
+            onMouseEnter={handleMegaEnter}
+            onMouseLeave={handleMegaLeave}
           >
             <MegaMenu />
           </div>
