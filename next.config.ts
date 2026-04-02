@@ -1,3 +1,4 @@
+// Build: 2026-04-02T00:52 - force rebuild for Today's Special feature
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
