@@ -32,9 +32,9 @@ export function ImageUpload({ value, onChange, onAddToGallery, label = "Image" }
       if (error) throw error;
       const { data } = supabase.storage.from("product-images").getPublicUrl(filename);
       onChange(data.publicUrl);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Upload error:", err);
-      alert("Upload failed. Make sure 'product-images' bucket exists and is public.");
+      alert(`Upload failed: ${err.message || "Unknown error"}. Make sure 'product-images' bucket exists and RLS policies are set in Supabase.`);
     }
     setUploading(false);
   };
@@ -132,7 +132,10 @@ export function GalleryUpload({ value, onChange, onSetAsMain }: GalleryUploadPro
           const { data } = supabase.storage.from("product-images").getPublicUrl(filename);
           newUrls.push(data.publicUrl);
         }
-      } catch { /* skip failed */ }
+      } catch (err: any) { 
+        console.error("Gallery upload error:", err);
+        alert(`Gallery upload failed: ${err.message}`);
+      }
     }
     onChange([...value, ...newUrls]);
     setUploading(false);

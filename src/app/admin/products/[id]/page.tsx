@@ -26,7 +26,7 @@ export default function EditProductPage({ params }: Props) {
     name: "", slug: "", price: "", comparePrice: "",
     description: "", categoryId: "beef", inStock: true, badge: "",
     imageUrl: "", leanness: 5, firmness: 5, richness: 5,
-    isFeatured: false, isBestSeller: false
+    isFeatured: false, isBestSeller: false, isSpecial: false
   });
 
   useEffect(() => {
@@ -46,7 +46,8 @@ export default function EditProductPage({ params }: Props) {
           firmness: found.firmness_rating || 5,
           richness: found.richness_rating || 5,
           isFeatured: found.is_featured,
-          isBestSeller: found.is_best_seller
+          isBestSeller: found.is_best_seller,
+          isSpecial: found.is_special || false
         });
         setGalleryImages(found.images || []);
         setWeightOptions(found.weight_options || []);
@@ -80,6 +81,7 @@ export default function EditProductPage({ params }: Props) {
       richness_rating: Number(form.richness),
       is_featured: form.isFeatured,
       is_best_seller: form.isBestSeller,
+      is_special: form.isSpecial,
     });
     setLoading(false);
     if (ok) router.push("/admin/products");
@@ -204,7 +206,12 @@ export default function EditProductPage({ params }: Props) {
               <input type="text" name="badge" value={form.badge} onChange={handleChange} className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-black rounded-lg" />
             </div>
             <div className="grid grid-cols-1 gap-2 pt-2">
-              {[{ id: "inStock", label: "Product is In Stock" }, { id: "isFeatured", label: "Featured Product" }, { id: "isBestSeller", label: "Best Seller" }].map(({ id: fid, label }) => (
+              {[
+                { id: "inStock", label: "Product is In Stock" },
+                { id: "isFeatured", label: "Featured Product" },
+                { id: "isBestSeller", label: "Best Seller" },
+                { id: "isSpecial", label: "Today's Special" }
+              ].map(({ id: fid, label }) => (
                 <div key={fid} className="flex items-center gap-3">
                   <input type="checkbox" id={fid} name={fid} checked={(form as any)[fid]} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
                   <label htmlFor={fid} className="text-sm font-bold">{label}</label>

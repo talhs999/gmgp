@@ -9,6 +9,7 @@ export async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
+    .order("is_special", { ascending: false })
     .order("created_at", { ascending: false });
   if (error) { console.error("getProducts:", error); return []; }
   return (data as Product[]) ?? [];
@@ -18,7 +19,8 @@ export async function getFeaturedProducts(): Promise<Product[]> {
   const { data, error } = await supabaseAdmin()
     .from("products")
     .select("*, category:categories(*)")
-    .or("is_featured.eq.true,is_best_seller.eq.true")
+    .or("is_featured.eq.true,is_best_seller.eq.true,is_special.eq.true")
+    .order("is_special", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(12);
   if (error) { console.error("getFeaturedProducts:", error); return []; }

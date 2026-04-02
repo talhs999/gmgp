@@ -18,7 +18,7 @@ export default function AddProductPage() {
     name: "", slug: "", price: "", comparePrice: "",
     description: "", categoryId: "", inStock: true, badge: "",
     imageUrl: "", leanness: 5, firmness: 5, richness: 5,
-    isFeatured: false, isBestSeller: false
+    isFeatured: false, isBestSeller: false, isSpecial: false
   });
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [weightOptions, setWeightOptions] = useState<WeightOption[]>([]);
@@ -52,6 +52,7 @@ export default function AddProductPage() {
       richness_rating: Number(form.richness),
       is_featured: form.isFeatured,
       is_best_seller: form.isBestSeller,
+      is_special: form.isSpecial,
       tags: [],
     });
     setLoading(false);
@@ -156,10 +157,15 @@ export default function AddProductPage() {
               <input type="text" name="badge" value={form.badge} onChange={handleChange} className="w-full border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-black rounded-lg" placeholder="e.g. BEST SELLER or NEW" />
             </div>
             <div className="grid grid-cols-1 gap-2 pt-2">
-              {[{ id: "inStock", label: "Product is In Stock" }, { id: "isFeatured", label: "Featured Product" }, { id: "isBestSeller", label: "Best Seller" }].map(({ id, label }) => (
-                <div key={id} className="flex items-center gap-3">
-                  <input type="checkbox" id={id} name={id} checked={(form as any)[id]} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
-                  <label htmlFor={id} className="text-sm font-bold">{label}</label>
+              {[
+                { id: "inStock", label: "Product is In Stock" },
+                { id: "isFeatured", label: "Featured Product" },
+                { id: "isBestSeller", label: "Best Seller" },
+                { id: "isSpecial", label: "Today's Special" }
+              ].map(({ id: fid, label }) => (
+                <div key={fid} className="flex items-center gap-3">
+                  <input type="checkbox" id={fid} name={fid} checked={(form as any)[fid]} onChange={handleChange} className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
+                  <label htmlFor={fid} className="text-sm font-bold">{label}</label>
                 </div>
               ))}
             </div>

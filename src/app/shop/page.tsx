@@ -17,6 +17,7 @@ function ShopContent() {
   
   const searchParams = useSearchParams();
   const categorySlug = searchParams.get("category");
+  const activeTag = searchParams.get("tag");
 
   useEffect(() => {
     Promise.all([getProducts(), getCategories()]).then(([prods, cats]) => {
@@ -35,18 +36,32 @@ function ShopContent() {
 
   const filtered = useMemo(() => {
     let list = [...products];
+
+    // Basic Filters
     if (search) {
       const q = search.toLowerCase();
-      list = list.filter((p) => p.name.toLowerCase().includes(q) || p.tags.some((t) => t.includes(q)));
+      list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.tags && p.tags.some((t) => t.includes(q))));
     }
     if (activeCategory !== "all") {
       list = list.filter((p) => p.category_id === activeCategory);
     }
+
+    // Special Tag Filter
+    if (activeTag === "special") {
+      list = list.filter((p) => p.is_special);
+    }
+    
+    // Sort logic
     if (sortBy === "price-asc") list.sort((a, b) => a.price - b.price);
-    if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
-    if (sortBy === "newest") list.sort((a, b) => (a.badge === "NEW" ? -1 : 1));
+    else if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
+    else if (sortBy === "newest") list.sort((a, b) => (a.badge === "NEW" ? -1 : 1));
+    else if (activeTag !== "special") {
+      // Default: Specials first
+      list.sort((a, b) => (a.is_special === b.is_special ? 0 : a.is_special ? -1 : 1));
+    }
+    
     return list;
-  }, [search, activeCategory, sortBy, products]);
+  }, [search, activeCategory, sortBy, products, activeTag]);
 
   return (
     <div>
@@ -61,7 +76,9 @@ function ShopContent() {
       >
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">Our Cuts</h1>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tight">
+            {activeTag === "special" ? "Today's Special" : "Our Cuts"}
+          </h1>
           <p className="text-white/70 mt-2 text-sm">
             {loading ? "Loading..." : `${products.length} premium products available`}
           </p>
