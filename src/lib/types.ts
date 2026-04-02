@@ -23,7 +23,7 @@ export interface Product {
   in_stock: boolean;
   is_featured: boolean;
   is_best_seller: boolean;
-  is_special: boolean;
+  is_special?: boolean;
   tags: string[];
   weight_options: WeightOption[] | null;
   leanness_rating: number | null;
