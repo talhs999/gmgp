@@ -131,149 +131,104 @@ export default function MainSlider() {
       {/* ============================================================ */}
       {/*  Slider track — peek layout                                  */}
       {/* ============================================================ */}
-      <div className="relative flex items-stretch h-[380px] sm:h-[440px] md:h-[500px] lg:h-[520px]">
+      <div className="relative h-[380px] sm:h-[440px] md:h-[500px] lg:h-[520px] w-full overflow-hidden">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.div
+            key={slides[current].id}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="absolute inset-0"
+          >
+            {/* Background meat image */}
+            <Image
+              src={slides[current].image}
+              alt={slides[current].heading}
+              fill
+              priority
+              className="object-cover"
+              sizes="100vw"
+            />
+            {/* Left-sided gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
 
-        {/* ---- Peek: Previous slide (left) ---- */}
-        <div
-          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden group"
-          onClick={prev}
-          aria-label="Previous slide"
-        >
-          <Image
-            src={slides[prevIdx].image}
-            alt="Previous slide peek"
-            fill
-            className="object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
-            sizes="10vw"
-          />
-          {/* blur + darken for unfocused peek */}
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
-          {/* left chevron */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </div>
-        </div>
+            {/* Slide text content */}
+            <div className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-14 md:px-24 lg:px-32 max-w-2xl">
+              <motion.span
+                custom={0}
+                variants={textVariants}
+                initial="hidden"
+                animate="visible"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white/90 mb-3 tracking-wide"
+              >
+                {slides[current].badge}
+              </motion.span>
 
-        {/* ---- Main active slide ---- */}
-        <div className="relative flex-1 overflow-hidden">
-          <AnimatePresence initial={false} custom={direction} mode="wait">
-            <motion.div
-              key={slides[current].id}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              className="absolute inset-0"
-            >
-              {/* Background meat image */}
-              <Image
-                src={slides[current].image}
-                alt={slides[current].heading}
-                fill
-                priority
-                className="object-cover"
-                sizes="100vw"
-              />
-              {/* Left-sided gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
+              <motion.h2
+                custom={1}
+                variants={textVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-5 uppercase tracking-tighter"
+              >
+                {slides[current].heading}
+              </motion.h2>
 
-              {/* Slide text content */}
-              <div className="relative z-10 h-full flex flex-col justify-center px-8 sm:px-14 md:px-20 max-w-xl">
-                <motion.span
-                  custom={0}
-                  variants={textVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white/90 mb-3 tracking-wide"
+              <motion.p
+                custom={2}
+                variants={textVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-sm sm:text-base text-white/75 leading-relaxed mb-8 max-w-md"
+              >
+                {slides[current].description}
+              </motion.p>
+
+              <motion.div
+                custom={3}
+                variants={textVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <a
+                  href={slides[current].href}
+                  className="inline-flex items-center gap-3 bg-white text-black font-black text-xs sm:text-sm uppercase tracking-widest px-8 py-4 hover:bg-accent hover:text-white transition-all duration-300 shadow-xl group/btn"
                 >
-                  {slides[current].badge}
-                </motion.span>
+                  {slides[current].cta}
+                  <svg className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </motion.div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
 
-                <motion.h2
-                  custom={1}
-                  variants={textVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-[1.1] mb-4"
-                >
-                  {slides[current].heading}
-                </motion.h2>
-
-                <motion.p
-                  custom={2}
-                  variants={textVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-sm sm:text-base text-white/75 leading-relaxed mb-7 max-w-sm"
-                >
-                  {slides[current].description}
-                </motion.p>
-
-                <motion.div
-                  custom={3}
-                  variants={textVariants}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  <a
-                    href={slides[current].href}
-                    className="inline-flex items-center gap-2 bg-white text-black font-bold text-sm uppercase tracking-widest px-7 py-3.5 hover:bg-[#E31B23] hover:text-white transition-colors duration-300 shadow-lg"
-                  >
-                    {slides[current].cta}
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Mobile arrow buttons */}
+        {/* Navigation Arrows */}
+        <div className="absolute inset-y-0 left-0 right-0 z-20 pointer-events-none flex items-center justify-between px-4 sm:px-8">
           <button
-            onClick={prev}
+            onClick={(e) => { e.stopPropagation(); prev(); }}
             aria-label="Previous slide"
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-colors lg:hidden"
+            className="pointer-events-auto w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-black/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-accent hover:scale-110 transition-all duration-300 border border-white/10 group shadow-2xl"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-6 h-6 lg:w-7 lg:h-7 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
-            onClick={next}
+            onClick={(e) => { e.stopPropagation(); next(); }}
             aria-label="Next slide"
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/60 transition-colors lg:hidden"
+            className="pointer-events-auto w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-black/20 backdrop-blur-md text-white flex items-center justify-center hover:bg-accent hover:scale-110 transition-all duration-300 border border-white/10 group shadow-2xl"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-6 h-6 lg:w-7 lg:h-7 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
-        </div>
-
-        {/* ---- Peek: Next slide (right) ---- */}
-        <div
-          className="hidden lg:block w-[7%] flex-shrink-0 cursor-pointer relative overflow-hidden group"
-          onClick={next}
-          aria-label="Next slide"
-        >
-          <Image
-            src={slides[nextIdx].image}
-            alt="Next slide peek"
-            fill
-            className="object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
-            sizes="10vw"
-          />
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg className="w-6 h-6 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
         </div>
       </div>
+
 
       {/* ============================================================ */}
       {/*  Bottom strip: Join Membership + Pagination dots             */}
