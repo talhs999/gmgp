@@ -129,11 +129,11 @@ export default function FAQPage() {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Hero Section */}
-      <div className="bg-black py-20 px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">
+      <div className="bg-black pt-36 pb-20 md:pt-48 md:pb-24 px-4 text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white uppercase tracking-tight mb-6">
           FAQ & Help Centre
         </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        <p className="text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed px-4">
           Find answers to common questions about GMGP’s meat delivery, walk-in shops, Halal certification, storage tips, and more.
         </p>
       </div>
