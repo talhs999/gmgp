@@ -10,18 +10,19 @@ interface IconData {
   type: "icon" | "url" | "empty";
   value: string;
   color: string;
+  inHeader: boolean;
 }
 
 const parseIconData = (imageUrl: string | null): IconData => {
-  if (!imageUrl) return { type: "empty", value: "", color: "#000000" };
+  if (!imageUrl) return { type: "empty", value: "", color: "#000000", inHeader: false };
   try {
     const data = JSON.parse(imageUrl);
-    if (data.type) return data;
+    if (data.type) return { ...data, inHeader: data.inHeader ?? false };
   } catch (e) {
     // Legacy support
-    return { type: "url", value: imageUrl, color: "#000000" };
+    return { type: "url", value: imageUrl, color: "#000000", inHeader: false };
   }
-  return { type: "empty", value: "", color: "#000000" };
+  return { type: "empty", value: "", color: "#000000", inHeader: false };
 };
 
 export default function MegaMenu() {
@@ -34,6 +35,8 @@ export default function MegaMenu() {
       setLoading(false);
     });
   }, []);
+
+  const headerCategories = categories.filter(cat => parseIconData(cat.image_url).inHeader);
 
   const renderIcon = (imageUrl: string | null) => {
     const data = parseIconData(imageUrl);
@@ -76,7 +79,7 @@ export default function MegaMenu() {
           </div>
         ) : (
           <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-4">
-            {categories.map((cat) => (
+            {headerCategories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/shop?category=${cat.slug}`}

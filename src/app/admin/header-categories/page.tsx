@@ -9,18 +9,18 @@ interface IconData {
   type: "icon" | "url" | "empty";
   value: string;
   color: string;
+  inHeader: boolean;
 }
 
 const parseIconData = (imageUrl: string | null): IconData => {
-  if (!imageUrl) return { type: "empty", value: "", color: "#000000" };
+  if (!imageUrl) return { type: "empty", value: "", color: "#000000", inHeader: false };
   try {
     const data = JSON.parse(imageUrl);
-    if (data.type) return data;
+    if (data.type) return { ...data, inHeader: data.inHeader ?? false };
   } catch (e) {
-    // Legacy support: if it's not JSON, assume it's an old URL
-    return { type: "url", value: imageUrl, color: "#000000" };
+    return { type: "url", value: imageUrl, color: "#000000", inHeader: false };
   }
-  return { type: "empty", value: "", color: "#000000" };
+  return { type: "empty", value: "", color: "#000000", inHeader: false };
 };
 
 export default function HeaderCategoriesPage() {
@@ -59,15 +59,26 @@ export default function HeaderCategoriesPage() {
     setEditingCat(cat);
   };
 
+  const toggleHeaderStatus = async (cat: Category, status: boolean) => {
+    setSaving(cat.id);
+    const data = parseIconData(cat.image_url);
+    const updatedData = { ...data, inHeader: status };
+    const jsonString = JSON.stringify(updatedData);
+    await updateCategory(cat.id, { image_url: jsonString });
+    setCategories(prev => prev.map(c => c.id === cat.id ? { ...c, image_url: jsonString } : c));
+    setSaving(null);
+  };
+
   const handleSave = async () => {
     if (!editingCat) return;
     setSaving(editingCat.id);
     
     let saveData: IconData;
+    const currentData = parseIconData(editingCat.image_url);
     if (iconType === "icon") {
-      saveData = { type: "icon", value: selectedIcon, color: iconColor };
+      saveData = { type: "icon", value: selectedIcon, color: iconColor, inHeader: currentData.inHeader };
     } else {
-      saveData = { type: "url", value: iconUrl, color: "#000000" };
+      saveData = { type: "url", value: iconUrl, color: "#000000", inHeader: currentData.inHeader };
     }
 
     const jsonString = JSON.stringify(saveData);
@@ -90,11 +101,14 @@ export default function HeaderCategoriesPage() {
     return <ImageIcon size={32} className="text-gray-200 border border-dashed rounded p-1" />;
   };
 
+  const headerCategories = categories.filter(c => parseIconData(c.image_url).inHeader);
+  const inactiveCategories = categories.filter(c => !parseIconData(c.image_url).inHeader);
+
   return (
     <div className="relative">
       <div className="mb-8">
-        <h1 className="text-2xl font-black uppercase tracking-tight">Header Categories</h1>
-        <p className="text-gray-500 text-sm mt-1">Manage the icons and layout of your Mega Menu in the frontend header.</p>
+        <h1 className="text-2xl font-black uppercase tracking-tight">Header Menu Builder</h1>
+        <p className="text-gray-500 text-sm mt-1">Select which categories appear in the top Mega Menu and format their appearance.</p>
       </div>
 
       {loading ? (
@@ -102,24 +116,62 @@ export default function HeaderCategoriesPage() {
           <Loader2 className="animate-spin text-gray-400" size={32} />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((cat) => (
-            <div key={cat.id} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col items-center justify-center text-center group hover:shadow-md transition-all">
-              <div className="mb-4 w-16 h-16 flex items-center justify-center bg-gray-50 rounded-full border border-gray-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
-                {renderIconPreview(cat.image_url)}
+        <div className="space-y-12">
+          {/* Active Header Items */}
+          <div>
+            <h2 className="text-lg font-bold uppercase tracking-wider mb-4 border-b pb-2 text-black">Active in Header ({headerCategories.length})</h2>
+            {headerCategories.length === 0 ? (
+              <div className="bg-orange-50 text-orange-600 p-6 rounded-xl border border-orange-100 text-sm font-semibold">
+                No categories are currently displayed in your header. Add some from the list below!
               </div>
-              <h3 className="font-black text-lg mb-1">{cat.name}</h3>
-              <p className="text-xs text-gray-400 mb-6 font-mono">{cat.slug}</p>
-              
-              <button 
-                onClick={() => openEditor(cat)}
-                className="btn-outline w-full text-xs py-2 flex justify-center items-center gap-2 group-hover:border-black group-hover:text-black"
-              >
-                {saving === cat.id ? <Loader2 size={14} className="animate-spin" /> : <Edit2 size={14} />}
-                Edit Icon
-              </button>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {headerCategories.map((cat) => (
+                  <div key={cat.id} className="bg-white p-6 rounded-xl border-2 border-green-100 shadow-sm flex flex-col items-center justify-center text-center group transition-all relative">
+                    <button 
+                      onClick={() => toggleHeaderStatus(cat, false)}
+                      className="absolute top-2 right-2 text-gray-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-colors"
+                      title="Remove from Header"
+                    >
+                      {saving === cat.id ? <Loader2 size={16} className="animate-spin" /> : <X size={16} />}
+                    </button>
+                    
+                    <div className="mb-4 w-16 h-16 flex items-center justify-center bg-gray-50 rounded-full border border-gray-100 transition-colors">
+                      {renderIconPreview(cat.image_url)}
+                    </div>
+                    <h3 className="font-black text-lg mb-4">{cat.name}</h3>
+                    
+                    <button 
+                      onClick={() => openEditor(cat)}
+                      className="btn-outline w-full text-xs py-2 flex justify-center items-center gap-2"
+                    >
+                      <Edit2 size={14} /> Edit Icon
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Inactive / Available Categories */}
+          <div>
+            <h2 className="text-lg font-bold uppercase tracking-wider mb-4 border-b pb-2 text-gray-400">Available Categories ({inactiveCategories.length})</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 opacity-75 hover:opacity-100 transition-opacity">
+              {inactiveCategories.map((cat) => (
+                <div key={cat.id} className="bg-white p-4 rounded-xl border border-gray-200 flex items-center justify-between">
+                  <div className="font-bold text-sm text-gray-600">{cat.name}</div>
+                  <button 
+                    onClick={() => toggleHeaderStatus(cat, true)}
+                    disabled={saving === cat.id}
+                    className="flex items-center gap-1 bg-black text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1.5 rounded hover:bg-accent transition-colors"
+                  >
+                    {saving === cat.id ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
+                    Add
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       )}
 
