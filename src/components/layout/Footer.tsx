@@ -14,7 +14,7 @@ const footerLinks = {
   "CUSTOMER SERVICE": [
     { label: "FAQ", href: "/faq" },
     { label: "Delivery Info", href: "/delivery" },
-    { label: "Track Order", href: "/account/orders" },
+    { label: "Track Order", href: "/track" },
     { label: "Returns Policy", href: "/returns" },
     { label: "Contact Us", href: "/contact" },
   ],
