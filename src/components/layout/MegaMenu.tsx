@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getCategories } from "@/lib/supabase-queries";
 import { Category } from "@/lib/types";
 import { Loader2, Image as ImageIcon } from "lucide-react";
-import * as LucideIcons from "lucide-react";
+import { ICON_MAP } from "@/lib/icon-map";
 
 interface IconData {
   type: "icon" | "url" | "empty";
@@ -49,7 +49,7 @@ export default function MegaMenu() {
     }
     
     if (data.type === "icon" && data.value) {
-      const IconComponent = (LucideIcons as any)[data.value];
+      const IconComponent = ICON_MAP[data.value];
       if (IconComponent) {
         return (
           <div className="transition-transform group-hover:scale-110 duration-300">

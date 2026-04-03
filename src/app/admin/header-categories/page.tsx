@@ -2,15 +2,8 @@
 import { useEffect, useState } from "react";
 import { getCategories, updateCategory } from "@/lib/supabase-queries";
 import { Category } from "@/lib/types";
-import { Check, Edit2, Loader2, Image as ImageIcon, Plus, Link2 } from "lucide-react";
-import * as LucideIcons from "lucide-react";
-
-// The icons we want to make available in the grid
-const AVAILABLE_ICONS = [
-  "Beef", "Drumstick", "Fish", "Flame", "Star", "Gift", "Tag", "ShoppingBag", 
-  "Heart", "Leaf", "Utensils", "Zap", "Award", "Truck", "Coffee", "ShoppingCart",
-  "Package", "Store", "TrendingUp", "ShieldCheck", "CheckCircle", "Sparkles", "ThumbsUp", "Clock"
-];
+import { Check, Edit2, Loader2, Image as ImageIcon, Plus, Link2, X } from "lucide-react";
+import { ICON_MAP, AVAILABLE_ICONS } from "@/lib/icon-map";
 
 interface IconData {
   type: "icon" | "url" | "empty";
@@ -91,7 +84,7 @@ export default function HeaderCategoriesPage() {
       return <img src={data.value} alt="icon" className="w-8 h-8 object-contain" />;
     }
     if (data.type === "icon" && data.value) {
-      const IconComponent = (LucideIcons as any)[data.value];
+      const IconComponent = ICON_MAP[data.value];
       return IconComponent ? <IconComponent size={32} color={data.color || "#000000"} /> : <ImageIcon size={32} className="text-gray-300" />;
     }
     return <ImageIcon size={32} className="text-gray-200 border border-dashed rounded p-1" />;
@@ -137,7 +130,7 @@ export default function HeaderCategoriesPage() {
             <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <h2 className="text-lg font-black uppercase tracking-tight">Edit Icon: <span className="text-accent">{editingCat.name}</span></h2>
               <button onClick={() => setEditingCat(null)} className="text-gray-400 hover:text-black transition-colors rounded-lg p-1 hover:bg-gray-100">
-                <LucideIcons.X size={20} />
+                <X size={20} />
               </button>
             </div>
 
@@ -179,7 +172,7 @@ export default function HeaderCategoriesPage() {
                     <label className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-3 text-center">Select Icon</label>
                     <div className="grid grid-cols-6 sm:grid-cols-8 gap-3 max-h-64 overflow-y-auto p-2">
                       {AVAILABLE_ICONS.map((iconName) => {
-                        const IconComponent = (LucideIcons as any)[iconName];
+                        const IconComponent = ICON_MAP[iconName];
                         if (!IconComponent) return null;
                         const isSelected = selectedIcon === iconName;
                         return (
