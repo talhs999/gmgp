@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
-  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight, Truck, X, Menu, Ticket
+  LayoutDashboard, Package, ShoppingBag, Tag, Users, LogOut, ChevronRight, Truck, X, Menu, Ticket, PanelTop
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -13,6 +13,7 @@ const links = [
   { href: "/admin/products", label: "Products", icon: Package, slug: "products" },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag, slug: "orders" },
   { href: "/admin/categories", label: "Categories", icon: Tag, slug: "categories" },
+  { href: "/admin/header-categories", label: "Header Categories", icon: PanelTop, slug: "header-categories" },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket, slug: "coupons" },
   { href: "/admin/settings", label: "Shipping", icon: Truck, slug: "settings" },
   { href: "/admin/reviews", label: "Reviews", icon: ShoppingBag, slug: "reviews" },

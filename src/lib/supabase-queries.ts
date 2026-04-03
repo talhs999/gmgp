@@ -110,6 +110,14 @@ export async function createCategory(category: Omit<Category, "id">): Promise<Ca
   return data as Category;
 }
 
+export async function updateCategory(id: string, updates: Partial<Category>): Promise<boolean> {
+  const { error } = await supabaseAdmin().from("categories")
+    .update(updates)
+    .eq("id", id);
+  if (error) { console.error("updateCategory:", error); return false; }
+  return true;
+}
+
 export async function deleteCategory(id: string): Promise<boolean> {
   const { error } = await supabaseAdmin().from("categories").delete().eq("id", id);
   if (error) { console.error("deleteCategory:", error); return false; }
