@@ -1,5 +1,5 @@
 "use server";
-import { getOrderById } from "@/lib/supabase-queries";
+import { supabaseAdmin } from "@/lib/supabase";
 import { Order } from "@/lib/types";
 
 // Public lightweight tracking method that DOES NOT leak sensitive email or internal user details unnecessarily
@@ -9,26 +9,44 @@ export async function trackPublicOrder(orderId: string): Promise<{
   error?: string;
 }> {
   try {
-    if (!orderId || typeof orderId !== "string" || orderId.trim() === "") {
+    const cleanId = orderId.replace(/^#/, "").trim().toLowerCase();
+
+    if (!cleanId) {
       return { success: false, error: "Please enter a valid Order ID." };
     }
 
-    const order = await getOrderById(orderId.trim());
-    
-    if (!order) {
-      return { success: false, error: "Order not found. Please check your ID and try again." };
+    // If it's a full UUID
+    if (cleanId.length === 36) {
+      const { data } = await supabaseAdmin()
+        .from("orders")
+        .select("id, status, total, delivery_date, created_at")
+        .eq("id", cleanId)
+        .maybeSingle();
+      
+      if (data) return { success: true, order: data };
     }
 
-    // Return only public-safe subset of the order
+    // Otherwise, treat as Short ID (e.g. first 8 chars)
+    // For small/medium shops, we can fetch recent orders and filter in JS
+    const { data, error } = await supabaseAdmin()
+      .from("orders")
+      .select("id, status, total, delivery_date, created_at")
+      .order("created_at", { ascending: false })
+      .limit(3000);
+
+    if (error || !data) {
+      return { success: false, error: "Order not found." };
+    }
+
+    const order = data.find((o) => o.id.toLowerCase().startsWith(cleanId));
+
+    if (!order) {
+      return { success: false, error: `Order #${orderId.toUpperCase()} not found. Please check your ID and try again.` };
+    }
+
     return {
       success: true,
-      order: {
-        id: order.id,
-        status: order.status,
-        total: order.total,
-        delivery_date: order.delivery_date,
-        created_at: order.created_at
-      }
+      order: order
     };
   } catch (error) {
     console.error("trackPublicOrder error:", error);
